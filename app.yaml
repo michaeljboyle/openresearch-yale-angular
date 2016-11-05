@@ -7,9 +7,17 @@ handlers:
   script: main.app
 
 - url: (.*)/
-  static_files: app\1/index.html
-  upload: app
+  static_files: app/index.html
+  upload: app/index.html
 
-- url: (.*)
-  static_files: app\1
-  upload: app
+- url: /js
+  static_dir: app/js
+
+- url: /css
+  static_dir: app/css
+
+- url: /img
+  static_dir: app/img
+
+- url: /views
+  static_dir: app/views
