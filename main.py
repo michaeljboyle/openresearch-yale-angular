@@ -53,7 +53,7 @@ class InsertHandler(RestHandler):
         r = json.loads(self.request.body)
         p = Post.new(r['title'], r['description'])
         response = p.json()
-        self.SendJson(r)
+        self.SendJson(response)
 
 
 class DeleteHandler(RestHandler):
