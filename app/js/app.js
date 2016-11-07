@@ -1,4 +1,4 @@
-var app = angular.module('PainPointsApp', ['ngRoute']);
+var app = angular.module('PainPointsApp', ['ngRoute', 'ngResource']);
 
 app.config(function($routeProvider) {
   $routeProvider.when('/', {

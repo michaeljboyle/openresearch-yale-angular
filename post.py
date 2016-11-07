@@ -22,6 +22,9 @@ class Post(ndb.Model):
 def get_all():
   return Post.query()
 
+def get(urlkey):
+  return ndb.Key(urlsafe=urlkey).get()
+
 def new(title, description):
   post = Post()
   post.title = title

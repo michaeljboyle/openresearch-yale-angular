@@ -1,10 +1,9 @@
 app.directive('postCard', function() { 
   return { 
     restrict: 'E',
-    controller: 'upvoteCtrl',
-    controllerAs: 'ctrl',
     scope: {
-      post: '='
+      post: '=',
+      upvote: '&'
     },
     templateUrl: 'js/directives/postCard.html'
   }; 
