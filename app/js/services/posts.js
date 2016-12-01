@@ -5,18 +5,3 @@ app.factory('Posts', ['$resource', function($resource) {
     }
   });
 }]);
-
-/*
-app.factory('Posts', function($resource) {
-  return $resource('http://movieapp-sitepointdemos.rhcloud.com/api/movies/:id', { id: '@_id' }, {
-    update: {
-      method: 'PUT'
-    }
-  });*/
-  /*
-  return $http.get('rest/query')
-         .success(function(data, status, headers, config) {
-          $rootScope.posts = data;
-         });
-  *//*
-});*/

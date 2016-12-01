@@ -1,14 +1,11 @@
-app.controller('submitCtrl', ['$scope', '$http', '$rootScope', '$location', function($scope, $http, $rootScope, $location) {
+app.controller('submitCtrl', ['$scope', '$rootScope', '$location', 'Posts',
+               function($scope, $rootScope, $location, Posts) {
   
+  $scope.post = new Posts();
+
   $scope.submit = function() {
-    var post = {
-      title: $scope.title,
-      description: $scope.description
-    };
-    $http.post('/rest/insert', post).success(function(data, status) {
-      $rootScope.posts.push(data);
+    $scope.post.$save(function() {
       $location.path('/');
     });
-  };
-
+  }
 }]);

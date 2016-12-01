@@ -1,5 +1,6 @@
-app.controller('voteCtrl', ['$scope', '$http', '$rootScope', 'Posts', function($scope, $http, $rootScope, Posts) {
-  $scope.posts = Posts.query();
+app.controller('voteCtrl', ['$scope', '$rootScope', 'Posts',
+               function($scope, $rootScope, Posts) {
+  $rootScope.posts = Posts.query();
 
   $scope.upvote = function(post) {
     post.votes += 1;
