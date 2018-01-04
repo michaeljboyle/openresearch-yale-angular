@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.blue-purple.min.css">
-    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="assets/css/app.css">
   </head>
   <body ng-app="PainPointsApp">
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
@@ -55,17 +55,18 @@
 
 
     <!-- Modules -->
-    <script src="js/app.js"></script>
+    <script src="app/app.module.js"></script>
+    <script src="app/app.route.js"></script>
 
     <!-- Controllers -->
-    <script src="js/controllers/voteController.js"></script>
-    <script src="js/controllers/submitController.js"></script>
+    <script src="app/components/vote/voteController.js"></script>
+    <script src="app/components/submit/submitController.js"></script>
 
     <!-- Directives -->
-    <script src="js/directives/postCard.js"></script>
+    <script src="app/shared/post/postDirective.js"></script>
 
     <!-- Services -->
-    <script src="js/services/posts.js"></script>
+    <script src="app/shared/post/postService.js"></script>
 
   </body>
 </html>

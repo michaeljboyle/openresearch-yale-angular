@@ -1,17 +1,5 @@
 var app = angular.module('PainPointsApp', ['ngRoute', 'ngResource']);
 
-app.config(function($routeProvider) {
-  $routeProvider.when('/', {
-    controller: 'voteCtrl',
-    templateUrl: 'views/vote.html'
-  }).when('/new', {
-    controller: 'submitCtrl',
-    templateUrl: 'views/submit.html'
-  }).otherwise({
-    redirectTo: '/'
-  });
-});
-
 app.factory('myHttpInterceptor', function($rootScope, $q) {
   return {
     'requestError': function(config) {

@@ -5,6 +5,6 @@ app.directive('postCard', function() {
       post: '=',
       upvote: '&'
     },
-    templateUrl: 'js/directives/postCard.html'
+    templateUrl: 'app/shared/post/postView.html'
   }; 
 });
