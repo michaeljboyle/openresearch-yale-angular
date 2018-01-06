@@ -1,4 +1,5 @@
-var app = angular.module('PainPointsApp', ['ngRoute', 'ngResource']);
+var app = angular.module('openresearchYale',
+                         ['ngRoute', 'ngResource', 'ngMaterial']);
 
 app.factory('myHttpInterceptor', function($rootScope, $q) {
   return {

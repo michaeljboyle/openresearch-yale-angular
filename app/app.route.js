@@ -1,4 +1,4 @@
-angular.module('PainPointsApp').config(function($routeProvider) {
+angular.module('openresearchYale').config(function($routeProvider) {
   $routeProvider.when('/', {
     controller: 'voteCtrl',
     templateUrl: 'app/components/vote/voteView.html'
