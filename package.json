@@ -1,0 +1,22 @@
+{
+  "name": "angular-oryale",
+  "version": "0.0.1",
+  "description": "Open research stack exchange",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaeljboyle/openresearch-yale-angular.git"
+  },
+  "author": "Michael Boyle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/michaeljboyle/openresearch-yale-angular/issues"
+  },
+  "homepage": "https://github.com/michaeljboyle/openresearch-yale-angular#readme",
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-autoprefixer": "^4.1.0"
+  }
+}

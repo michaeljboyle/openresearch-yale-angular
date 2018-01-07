@@ -5,18 +5,15 @@
   bottom: 0;
   margin-right: 20px;
   margin-bottom: 20px;
-  z-index: 900;
-}
+  z-index: 900; }
+
 .post-card {
-  width: 100%;
-}
+  width: 100%; }
 
 .vote {
   width: 70px;
-  height: 70px;
-}
+  height: 70px; }
 
 .mdl-badge.mdl-badge--overlap:after {
   right: 7px;
-  top: 7px;
-}
+  top: 7px; }
