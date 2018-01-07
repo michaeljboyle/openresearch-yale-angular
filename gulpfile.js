@@ -17,8 +17,9 @@ function serve(done) {
     server: './src/client',
   });
   gulp.watch('src/client/assets/sass/**/*.scss', convertSass);
-  gulp.watch('src/client/**/*.js', lint);
-  gulp.watch('src/client/**/*.html').on('change', browserSync.reload);
+  // gulp.watch('src/client/**/*.js', lint);
+  gulp.watch(['src/client/**/*.html', 'src/client/**/*.js'])
+    .on('change', browserSync.reload);
 }
 
 function convertSass(done) {

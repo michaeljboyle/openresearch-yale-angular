@@ -1,20 +1,10 @@
-var app = angular.module('openresearchYale',
-                         ['ngRoute', 'ngResource', 'ngMaterial']);
+(function() {
+  'use strict';
 
-app.factory('myHttpInterceptor', function($rootScope, $q) {
-  return {
-    'requestError': function(config) {
-      $rootScope.status = 'HTTP REQUEST ERROR ' + config;
-      return config || $q.when(config);
-    },
-    'responseError': function(rejection) {
-      $rootScope.status = 'HTTP RESPONSE ERROR ' + rejection.status + '\n' +
-                          rejection.data;
-      return $q.reject(rejection);
-    },
-  };
-});
-
-app.config(function($httpProvider) {
-  $httpProvider.interceptors.push('myHttpInterceptor');
-});
+  angular
+    .module('oryale', [
+      'ngRoute',
+      'ngResource',
+      'ngMaterial',
+    ]);
+})();

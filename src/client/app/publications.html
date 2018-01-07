@@ -1,0 +1,28 @@
+<div data-ng-controller="PublicationsController as vm" layout-align="space-between none" >
+    <h1>Publications</h1>
+    <md-card data-ng-repeat="p in vm.pubs" layout="row">
+        <div class="statscontainer" layout-padding layout-align="space-between center" layout="column">
+            <div class="vote" layout-align="space-between center" layout="column">
+                <div class="vote-count-post">{{p.numVotes}}</div>
+                <div class="count">votes</div>
+            </div>
+            <div class="comments" layout-align="space-between center" layout="column">
+                <div class="vote-count-post">{{p.numComments}}</div>
+                <div class="count">comments</div>
+            </div>
+            <div class="views" layout-align="space-between center" layout="column">
+                <div class="vote-count-post">{{p.numViews}}</div>
+                <div class="count">views</div>
+            </div>
+        </div>
+        <div>
+            <md-card-content>
+                <h2>{{p.title}}</h2>
+                <p>{{p.summary}}</p>
+            </md-card-content>
+            <md-card-footer layout="row">
+                <md-button data-ng-repeat="t in p.tags" class="md-raised md-primary">{{t}}</md-button>
+            </md-card-footer>
+        </div>
+    </md-card>
+</div>
