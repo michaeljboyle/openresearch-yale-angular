@@ -4,14 +4,14 @@ threadsafe: true
 
 handlers:
 - url: /api/.*
-  script: main.app
+  script: server.main.app
 
 - url: (.*)/
-  static_files: index.html
-  upload: index.html
+  static_files: client/index.html
+  upload: client/index.html
 
 - url: /app
-  static_dir: app
+  static_dir: client/app
 
 - url: /assets
-  static_dir: assets
+  static_dir: client/assets

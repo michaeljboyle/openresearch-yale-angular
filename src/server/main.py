@@ -1,55 +1,63 @@
-import logging
 import json
 import webapp2
 
-import post as Post
+import publication_api as pubapi
+
 
 def get_path_id(path):
-  return path.split('/')[-1]
+    return path.split('/')[-1]
 
 
 class RestHandler(webapp2.RequestHandler):
 
-  def dispatch(self):
-    # time.sleep(1)
-    super(RestHandler, self).dispatch()
+    def dispatch(self):
+        # time.sleep(1)
+        super(RestHandler, self).dispatch()
 
-  def SendJson(self, r):
-    self.response.headers['content-type'] = 'text/plain'
-    self.response.write(json.dumps(r))
+    def SendJson(self, r):
+        self.response.headers['content-type'] = 'text/plain'
+        self.response.write(json.dumps(r))
 
-class NoKeyHandler(RestHandler):
+# class NoKeyHandler(RestHandler):
 
-  def post(self):
-    r = json.loads(self.request.body)
-    p = Post.new(r['title'], r['description'])
-    self.SendJson(p.json())
+#     def post(self):
+#         r = json.loads(self.request.body)
+#         p = Post.new(r['title'], r['description'])
+#         self.SendJson(p.json())
 
-  def get(self):
-    posts = Post.get_all()
-    r = [post.json() for post in posts]
-    self.SendJson(r)
+#     def get(self):
+#         posts = Post.get_all()
+#         r = [post.json() for post in posts]
+#         self.SendJson(r)
 
 
-class KeyHandler(RestHandler):
+# class KeyHandler(RestHandler):
 
-  def get(self):
-    str_key = get_path_id(self.request.path)
-    p = Post.get(str_key)
-    self.SendJson(p.json())
+#     def get(self):
+#         str_key = get_path_id(self.request.path)
+#         p = Post.get(str_key)
+#         self.SendJson(p.json())
 
-  # Only modifies votes
-  def put(self):
-    str_key = get_path_id(self.request.path)
-    p = Post.upvote(str_key)
-    self.SendJson(p.json())
+#     # Only modifies votes
+#     def put(self):
+#         str_key = get_path_id(self.request.path)
+#         p = Post.upvote(str_key)
+#         self.SendJson(p.json())
 
-  def delete(self):
-    str_key = get_path_id(self.request.path)
-    Post.delete(str_key)
-    
+#     def delete(self):
+#         str_key = get_path_id(self.request.path)
+#         Post.delete(str_key)
+
+
+class PubListHandler(RestHandler):
+
+    def get(self):
+        pubs = pubapi.get_pub_list()
+        self.SendJson(pubs)
+
 
 app = webapp2.WSGIApplication([
-  ('/api/posts', NoKeyHandler),
-  ('/api/posts/.*', KeyHandler)
+  # ('/api/posts', NoKeyHandler),
+  # ('/api/posts/.*', KeyHandler)
+  ('/api/getPubList', PubListHandler)
 ], debug=True)
