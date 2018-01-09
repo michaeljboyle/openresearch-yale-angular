@@ -1,0 +1,29 @@
+<md-content layout-align="space-between none" >
+    <md-card layout="row">
+        <div class="statscontainer" layout-padding layout-align="space-between center" layout="column">
+            <div class="vote" layout-align="space-between center" layout="column">
+                <div class="vote-count-post">{{vm.pub.numVotes}}</div>
+                <div class="count">votes</div>
+            </div>
+            <div class="comments" layout-align="space-between center" layout="column">
+                <div class="vote-count-post">{{vm.pub.numComments}}</div>
+                <div class="count">comments</div>
+            </div>
+            <div class="views" layout-align="space-between center" layout="column">
+                <div class="vote-count-post">{{vm.pub.numViews}}</div>
+                <div class="count">views</div>
+            </div>
+        </div>
+        <div>
+            <md-card-content>
+                <h2>{{vm.pub.title}}</h2>
+                <md-button class="md-raised md-primary" ng-href="#/read/{{vm.pub.id}}" aria-label="read pub">Read It</md-button>
+                <h4>{{vm.pub.summary}}</h4>
+                <p>{{vm.pub.abstract}}</p>
+            </md-card-content>
+            <md-card-footer layout="row">
+                <md-button data-ng-repeat="t in vm.tags" class="md-raised md-accent">{{t}}</md-button>
+            </md-card-footer>
+        </div>
+    </md-card>
+</md-content>

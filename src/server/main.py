@@ -44,22 +44,22 @@ class PubNoKeyHandler(RestHandler):
     #     self.SendJson(r)
 
 
-# class KeyHandler(RestHandler):
+class KeyHandler(RestHandler):
 
-#     def get(self):
-#         str_key = get_path_id(self.request.path)
-#         p = Post.get(str_key)
-#         self.SendJson(p.json())
+    def get(self):
+        urlkey = get_path_id(self.request.path)
+        p = pub.get(urlkey)
+        self.SendJson(p)
 
-#     # Only modifies votes
-#     def put(self):
-#         str_key = get_path_id(self.request.path)
-#         p = Post.upvote(str_key)
-#         self.SendJson(p.json())
+    # # Only modifies votes
+    # def put(self):
+    #     str_key = get_path_id(self.request.path)
+    #     p = Post.upvote(str_key)
+    #     self.SendJson(p.json())
 
-#     def delete(self):
-#         str_key = get_path_id(self.request.path)
-#         Post.delete(str_key)
+    # def delete(self):
+    #     str_key = get_path_id(self.request.path)
+    #     Post.delete(str_key)
 
 
 class PubListHandler(RestHandler):
@@ -71,6 +71,6 @@ class PubListHandler(RestHandler):
 
 app = webapp2.WSGIApplication([
   ('/api/pub', PubNoKeyHandler),
-  # ('/api/posts/.*', KeyHandler)
+  ('/api/pub/.*', KeyHandler),
   ('/api/getPubList', PubListHandler)
 ], debug=True)

@@ -6,6 +6,7 @@
 
       'oryale.submit',
       'oryale.publications',
+      'oryale.review',
 
       'ngMaterial',
     ]);
