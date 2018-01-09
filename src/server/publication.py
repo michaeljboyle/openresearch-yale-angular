@@ -8,7 +8,7 @@ class Publication(ndb.Model):
     num_comments = ndb.IntegerProperty()
     num_views = ndb.IntegerProperty()
     num_votes = ndb.IntegerProperty()
-    pdf_link = ndb.StringProperty()
+    gcs_file_path = ndb.StringProperty()
     summary = ndb.StringProperty()
     tags = ndb.StringProperty(repeated=True)
     title = ndb.StringProperty()

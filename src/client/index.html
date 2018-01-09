@@ -23,7 +23,9 @@
     <!-- endinject -->
 </head>
 <body>
-    <div data-ng-include="'app/shell.html'"></div>
+    <div layout="column" layout-padding layout-wrap>
+        <div data-ng-view></div>
+    </div>
 
     <!-- inject-vendor:js -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
@@ -33,6 +35,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-resource.js"></script>
     <script src="https://code.angularjs.org/1.2.28/angular-route.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+    <script src="app/lib/angular-file-upload-all.min.js"></script> 
+
+    <!-- <script src="//unpkg.com/@uirouter/angularjs/release/angular-ui-router.min.js"></script> -->
     <!-- endinject -->
 
 
@@ -44,12 +50,19 @@
     <!-- Reusable Blocks/Modules -->
 
     <!-- core module -->
-    <script src="app/publications.service.js"></script>
+    <script src="app/core/publications.service.js"></script>
+    <script src="app/core/submit.service.js"></script>
 
     <!-- publications -->
-    <script src="app/publications.js"></script>
+    <script src="app/publications/publications.module.js"></script>
+    <script src="app/publications/publications.route.js"></script>
+    <script src="app/publications/publications.js"></script>
 
     <!-- submit -->
+    <script src="app/submit/submit.module.js"></script>
+    <script src="app/submit/submit.route.js"></script>
+    <script src="app/submit/submit.js"></script>
+    <script src="app/submit/file-model.directive.js"></script>
 
     <!-- layout -->
 

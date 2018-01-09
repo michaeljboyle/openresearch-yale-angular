@@ -3,8 +3,10 @@
 
   angular
     .module('oryale', [
-      'ngRoute',
-      'ngResource',
+
+      'oryale.submit',
+      'oryale.publications',
+
       'ngMaterial',
     ]);
 })();

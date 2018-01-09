@@ -1,7 +1,9 @@
 import json
 import webapp2
+import logging
 
-import publication_api as pubapi
+import publication_api as pub
+import gcs_api as gcs
 
 
 def get_path_id(path):
@@ -18,17 +20,28 @@ class RestHandler(webapp2.RequestHandler):
         self.response.headers['content-type'] = 'text/plain'
         self.response.write(json.dumps(r))
 
-# class NoKeyHandler(RestHandler):
 
-#     def post(self):
-#         r = json.loads(self.request.body)
-#         p = Post.new(r['title'], r['description'])
-#         self.SendJson(p.json())
+class PubNoKeyHandler(RestHandler):
 
-#     def get(self):
-#         posts = Post.get_all()
-#         r = [post.json() for post in posts]
-#         self.SendJson(r)
+    def post(self):
+        try:
+            file_data = self.request.get('file')
+        except KeyError:
+            logging.error('"file" not in upload keys')
+
+        r = json.loads(self.request.get('data'))
+        try:
+            r['file_path'] = gcs.upload(file_data)
+            key = pub.new(r)
+            self.SendJson({'key': key, 'success': True})
+        except:
+            logging.error('Something went wrong with file upload')
+            self.SendJson({'key': None, 'success': False})
+
+    # def get(self):
+    #     posts = Post.get_all()
+    #     r = [post.json() for post in posts]
+    #     self.SendJson(r)
 
 
 # class KeyHandler(RestHandler):
@@ -52,12 +65,12 @@ class RestHandler(webapp2.RequestHandler):
 class PubListHandler(RestHandler):
 
     def get(self):
-        pubs = pubapi.get_pub_list()
+        pubs = pub.get_pub_list()
         self.SendJson(pubs)
 
 
 app = webapp2.WSGIApplication([
-  # ('/api/posts', NoKeyHandler),
+  ('/api/pub', PubNoKeyHandler),
   # ('/api/posts/.*', KeyHandler)
   ('/api/getPubList', PubListHandler)
 ], debug=True)
