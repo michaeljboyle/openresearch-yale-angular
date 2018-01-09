@@ -10,11 +10,17 @@
   /* @ngInject */
   function pubService($http, $log) {
     var service = {
+      'getDocUrl': getDocUrl,
       'getPubList': getPubList,
       'getPub': getPub,
     };
 
     return service;
+
+
+    function getDocUrl(gcsFilePath) {
+      return '/api/doc' + gcsFilePath;
+    }
 
 
     function getPubList() {

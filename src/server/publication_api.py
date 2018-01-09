@@ -14,7 +14,7 @@ def dictify(pub, summary=True):
     }
     if not summary:
         o['abstract'] = pub.abstract
-        o['gcs_file_path'] = pub.gcs_file_path
+        o['gcsFilePath'] = pub.gcs_file_path
 
     return o
 

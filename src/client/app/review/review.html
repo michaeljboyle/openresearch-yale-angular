@@ -17,7 +17,7 @@
         <div>
             <md-card-content>
                 <h2>{{vm.pub.title}}</h2>
-                <md-button class="md-raised md-primary" ng-href="#/read/{{vm.pub.id}}" aria-label="read pub">Read It</md-button>
+                <md-button class="md-raised md-primary" ng-href="{{vm.docUrl}}" target="_blank" aria-label="read pub">Read</md-button>
                 <h4>{{vm.pub.summary}}</h4>
                 <p>{{vm.pub.abstract}}</p>
             </md-card-content>

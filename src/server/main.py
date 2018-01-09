@@ -32,6 +32,7 @@ class PubNoKeyHandler(RestHandler):
         r = json.loads(self.request.get('data'))
         try:
             r['file_path'] = gcs.upload(file_data)
+            logging.info('file path is %s' % r['file_path'])
             key = pub.new(r)
             self.SendJson({'key': key, 'success': True})
         except:
@@ -44,7 +45,7 @@ class PubNoKeyHandler(RestHandler):
     #     self.SendJson(r)
 
 
-class KeyHandler(RestHandler):
+class PubKeyHandler(RestHandler):
 
     def get(self):
         urlkey = get_path_id(self.request.path)
@@ -69,8 +70,20 @@ class PubListHandler(RestHandler):
         self.SendJson(pubs)
 
 
+class DocKeyHandler(RestHandler):
+
+    def get(self):
+        paths = self.request.path.split('/')
+        filename = paths[-1]
+        bucket = paths[-2]
+        file_data = gcs.fetch(filename, bucket)
+        self.response.headerlist = [('Content-type', 'application/pdf')]
+        self.response.write(file_data)
+
+
 app = webapp2.WSGIApplication([
   ('/api/pub', PubNoKeyHandler),
-  ('/api/pub/.*', KeyHandler),
-  ('/api/getPubList', PubListHandler)
+  ('/api/pub/.*', PubKeyHandler),
+  ('/api/getPubList', PubListHandler),
+  ('/api/doc/.*/.*', DocKeyHandler)
 ], debug=True)

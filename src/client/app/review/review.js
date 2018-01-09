@@ -5,11 +5,13 @@
         .module('oryale.review')
         .controller('ReviewController', ReviewController);
 
-    ReviewController.$inject = ['$routeParams', 'pubService', '$log'];
+    ReviewController.$inject = [
+        '$routeParams', 'pubService', '$log', '$location'];
 
     /* @ngInject */
-    function ReviewController($routeParams, pubService, $log) {
+    function ReviewController($routeParams, pubService, $log, $location) {
         var vm = this;
+        vm.docUrl = '';
         vm.pub = {};
 
         activate();
@@ -26,6 +28,7 @@
           var id = $routeParams.id;
           return pubService.getPub(id).then(function(data) {
             vm.pub = data;
+            vm.docUrl = pubService.getDocUrl(vm.pub.gcsFilePath);
             return vm.pub;
           });
         }
