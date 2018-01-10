@@ -1,6 +1,7 @@
 import json
 import webapp2
 import logging
+import datetime
 
 import publication_api as pub
 import gcs_api as gcs
@@ -17,8 +18,11 @@ class RestHandler(webapp2.RequestHandler):
         super(RestHandler, self).dispatch()
 
     def SendJson(self, r):
+        def date_converter(dt):
+            if isinstance(dt, datetime.datetime):
+                return dt.__str__()
         self.response.headers['content-type'] = 'text/plain'
-        self.response.write(json.dumps(r))
+        self.response.write(json.dumps(r, default=date_converter))
 
 
 class PubNoKeyHandler(RestHandler):
@@ -49,7 +53,7 @@ class PubKeyHandler(RestHandler):
 
     def get(self):
         urlkey = get_path_id(self.request.path)
-        p = pub.get(urlkey)
+        p = pub.get_with_descendants(urlkey)
         self.SendJson(p)
 
     # # Only modifies votes
@@ -81,9 +85,43 @@ class DocKeyHandler(RestHandler):
         self.response.write(file_data)
 
 
+class CommentKeyHandler(RestHandler):
+
+    def post(self):
+        logging.info(self.request.body)
+        data = json.loads(self.request.body)
+        urlkey = get_path_id(self.request.path)
+        c = pub.new_comment(urlkey, data)
+        self.SendJson({'obj': c, 'success': True})
+
+
+class CommentResponseKeyHandler(RestHandler):
+
+    def post(self):
+        logging.info(self.request.body)
+        data = json.loads(self.request.body)
+        urlkey = get_path_id(self.request.path)
+        cr = pub.new_comment_response(urlkey, data)
+        self.SendJson({'obj': cr, 'success': True})
+
+
+class VoteResponseHandler(RestHandler):
+
+    def post(self):
+        logging.info(self.request.body)
+        data = json.loads(self.request.body)
+        n = data['n']
+        urlkey = get_path_id(self.request.path)
+        obj = pub.vote(urlkey, n)
+        self.SendJson({'obj': obj, 'success': True})
+
+
 app = webapp2.WSGIApplication([
   ('/api/pub', PubNoKeyHandler),
   ('/api/pub/.*', PubKeyHandler),
   ('/api/getPubList', PubListHandler),
-  ('/api/doc/.*/.*', DocKeyHandler)
+  ('/api/doc/.*/.*', DocKeyHandler),
+  ('/api/postComment/.*', CommentKeyHandler),
+  ('/api/postCommentResponse/.*', CommentResponseKeyHandler),
+  ('/api/vote/.*', VoteResponseHandler)
 ], debug=True)

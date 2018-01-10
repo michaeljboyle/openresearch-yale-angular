@@ -1,0 +1,44 @@
+<md-card>
+    <div layout="row" layout-padding>
+        <div class="votecontainer" layout-padding layout-align="center center" layout="column">
+            <div class="upvote">
+                <md-button class="" ng-click="vm.upvote()" ng-disabled="vm.isUpvoted" aria-label="up vote">
+                    <md-icon md-svg-src="assets/img/ic_thumb_up_black_24px.svg" aria-label="thumbs up"></md-icon>
+                </md-button>
+            </div>
+            <div layout-align="space-between center" layout="column">
+                <div class="md-title">{{vm.comment.numVotes}}</div>
+            </div>
+            <div class="downvote">
+                <md-button class="" ng-click="vm.downvote()" ng-disabled="vm.isDownvoted" aria-label="down vote">
+                    <md-icon md-svg-src="assets/img/ic_thumb_down_black_24px.svg" aria-label="thumbs down"></md-icon>
+                </md-button>
+            </div>
+        </div>
+        <md-divider md-inset></md-divider>
+        <div layout="column" class="comment-card-content">
+            <md-card-content>
+                <p class="md-subhead">{{vm.comment.text}}</p>
+                <div layout="row" layout-align="end center">
+                    <p class="md-caption">{{vm.comment.author}} at {{vm.comment.date}}</p>
+                </div>
+            </md-card-content>
+            <md-card-footer>
+                <md-list class="md-dense" flex>
+                    <md-list-item class="md-2-line" data-ng-repeat="response in vm.comment.responses">
+                        <comment-response response="response" layout-fill></comment-response>
+                    </md-list-item>
+                </md-list>
+            </md-card-footer>
+            <md-card-actions layout="row" layout-align="space-between center">
+                <md-input-container layout-fill>
+                    <label>respond...</label>
+                    <textarea ng-model="vm.newResponse"></textarea>
+                </md-input-container>
+                <md-button class="md-fab md-mini md-accent" ng-click="vm.submitResponse()" md-ripple-size="full">
+                    <md-icon md-svg-src="assets/img/ic_comment_white_24px.svg" aria-label="thumbs down"></md-icon>
+                </md-button>
+            </md-card-actions layout="row">
+        </div>
+    </div>
+</md-card>

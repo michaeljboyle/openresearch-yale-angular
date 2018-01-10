@@ -1,29 +1,59 @@
-<md-content layout-align="space-between none" >
-    <md-card layout="row">
-        <div class="statscontainer" layout-padding layout-align="space-between center" layout="column">
-            <div class="vote" layout-align="space-between center" layout="column">
-                <div class="vote-count-post">{{vm.pub.numVotes}}</div>
-                <div class="count">votes</div>
-            </div>
-            <div class="comments" layout-align="space-between center" layout="column">
-                <div class="vote-count-post">{{vm.pub.numComments}}</div>
-                <div class="count">comments</div>
-            </div>
-            <div class="views" layout-align="space-between center" layout="column">
-                <div class="vote-count-post">{{vm.pub.numViews}}</div>
-                <div class="count">views</div>
-            </div>
-        </div>
-        <div>
-            <md-card-content>
-                <h2>{{vm.pub.title}}</h2>
-                <md-button class="md-raised md-primary" ng-href="{{vm.docUrl}}" target="_blank" aria-label="read pub">Read</md-button>
-                <h4>{{vm.pub.summary}}</h4>
-                <p>{{vm.pub.abstract}}</p>
+<md-content layout-align="space-between none">
+    <div id="docContainer" layout-align="center center" layout-padding>
+        <md-card>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-display-1">{{vm.pub.title}}</span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content layout="row">
+                <div class="votecontainer" layout-padding layout-align="center center" layout="column">
+                    <md-button class="" ng-click="vm.upvote()" ng-disabled="vm.isUpvoted" aria-label="up vote">
+                        <md-icon md-svg-src="assets/img/ic_thumb_up_black_48px.svg" aria-label="thumbs up"></md-icon>
+                    </md-button>
+                    <h2 class="md-display-1">{{vm.pub.numVotes}}</h2>
+                    <md-button class="" ng-click="vm.downvote()" ng-disabled="vm.isDownvoted" aria-label="down vote">
+                        <md-icon md-svg-src="assets/img/ic_thumb_down_black_48px.svg" aria-label="thumbs down"></md-icon>
+                    </md-button>
+                </div>
+                <div layout="column">
+                    <h4>{{vm.pub.summary}}</h4>
+                    <p>{{vm.pub.abstract}}</p>
+                </div>
             </md-card-content>
             <md-card-footer layout="row">
                 <md-button data-ng-repeat="t in vm.tags" class="md-raised md-accent">{{t}}</md-button>
             </md-card-footer>
+            <md-card-actions layout="column" layout-align="start">
+              <md-button class="md-primary md-raised" ng-href="{{vm.docUrl}}" target="_blank" aria-label="read pub">
+                  Read full text
+              </md-button>
+            </md-card-actions>
+        </md-card>
+    <div>
+    <div id="commentsContainer" layout-align="end center" layout-padding>
+        <div data-ng-repeat="comment in vm.pub.comments">
+            <comment-card comment="comment"></comment-card>
         </div>
-    </md-card>
+    </div>
+    <div id="commentSubmit">
+        <md-card>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headlline">Your Comment</span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content layout="column">
+                <md-input-container>
+                    <label>Comment</label>
+                    <textarea ng-model="vm.newComment" md-maxlength="500"></textarea>
+                </md-input-container>
+            </md-card-content>
+            <md-card-actions layout="column" layout-align="start">
+                <md-button class="md-raised md-accent" ng-click="vm.submitComment()" md-ripple-size="full">
+                    Submit
+                </md-button>
+            </md-card-actions>
+        </md-card>
+    </div>
 </md-content>

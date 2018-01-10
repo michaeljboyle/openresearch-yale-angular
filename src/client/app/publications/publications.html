@@ -21,8 +21,12 @@
             </div>
         </div>
         <div>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline"><a ng-href="#/review/{{p.id}}">{{p.title}}</a></span>
+              </md-card-title-text>
+            </md-card-title>
             <md-card-content>
-                <h2><a ng-href="#/review/{{p.id}}">{{p.title}}</a></h2>
                 <p>{{p.summary}}</p>
             </md-card-content>
             <md-card-footer layout="row">

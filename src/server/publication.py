@@ -3,22 +3,30 @@ from google.appengine.ext import ndb
 
 class Publication(ndb.Model):
     """A model for representing a publication."""
-    abstract = ndb.StringProperty()
+    abstract = ndb.TextProperty()
     date_submitted = ndb.DateTimeProperty(auto_now_add=True)
     num_comments = ndb.IntegerProperty()
     num_views = ndb.IntegerProperty()
     num_votes = ndb.IntegerProperty()
     gcs_file_path = ndb.StringProperty()
-    summary = ndb.StringProperty()
+    summary = ndb.TextProperty()
     tags = ndb.StringProperty(repeated=True)
     title = ndb.StringProperty()
 
+    def add_comment(self):
+        self.num_comments += 1
+        self.put()
+
+    def add_view(self):
+        self.num_views += 1
+        self.put()
+
     def upvote(self):
-        self.votes += 1
+        self.num_votes += 1
         self.put()
 
     def downvote(self):
-        self.votes -= 1
+        self.num_votes -= 1
         self.put()
 
     @classmethod

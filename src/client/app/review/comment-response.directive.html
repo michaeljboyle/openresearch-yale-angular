@@ -1,0 +1,13 @@
+<div layout="row" layout-align="start center" layout-fill>
+    <md-button class="md-mini" ng-click="vm.helpful()" ng-disabled="vm.isHelpful" aria-label="mark helpful">
+        +1<!-- <md-icon md-svg-src="assets/img/ic_thumb_up_black_18px.svg" aria-label="thumbs up"></md-icon> -->
+    </md-button>
+    {{vm.response.numVotes}}
+    <p class="md-subheading" layout-padding></p>
+    <div class="md-list-item-text" layout="column" layout-fill>
+        <h4>{{vm.response.text}}</h4>
+        <div layout-align="end center" layout="row">
+            <p>{{vm.response.author}} at {{vm.response.date}}</p>
+        </div>
+    </div>
+</div>
