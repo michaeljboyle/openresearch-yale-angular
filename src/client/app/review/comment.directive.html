@@ -19,8 +19,8 @@
         <div layout="column" class="comment-card-content">
             <md-card-content>
                 <p class="md-subhead">{{vm.comment.text}}</p>
-                <div layout="row" layout-align="end center">
-                    <p class="md-caption">{{vm.comment.author}} at {{vm.comment.date}}</p>
+                <div layout-align="end center" layout="row">
+                    <p><a ng-href="/">{{vm.comment.author}}</a> <span class="md-caption" am-time-ago="vm.comment.date"></span></p>
                 </div>
             </md-card-content>
             <md-card-footer>

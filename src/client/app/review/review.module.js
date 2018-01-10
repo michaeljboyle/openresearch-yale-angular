@@ -5,5 +5,6 @@
     .module('oryale.review', [
       'ngMaterial',
       'ngRoute',
+      'angularMoment',
     ]);
 })();

@@ -27,6 +27,7 @@
     function activate() {
       return getPub().then(function() {
         vm.newComment = '';
+        vm.pub.dateSubmitted = new Date(vm.pub.dateSubmitted);
         $log.info(vm.pub);
         $log.info('Activated review view');
       });

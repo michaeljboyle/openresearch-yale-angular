@@ -45,6 +45,7 @@
         if (vm.response.numVotes == 0) {
           vm.response.numVotes = '';
         }
+        vm.response.date = new Date(vm.response.date);
       }
 
       function helpful() {

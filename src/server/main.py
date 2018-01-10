@@ -1,7 +1,7 @@
 import json
 import webapp2
 import logging
-import datetime
+from datetime import datetime
 
 import publication_api as pub
 import gcs_api as gcs
@@ -19,8 +19,12 @@ class RestHandler(webapp2.RequestHandler):
 
     def SendJson(self, r):
         def date_converter(dt):
-            if isinstance(dt, datetime.datetime):
-                return dt.__str__()
+            t0 = datetime(1970, 1, 1)
+            if isinstance(dt, datetime):
+                logging.info(dt)
+                timestamp = (dt - t0).total_seconds() * 1000  # for time in ms
+                logging.info(timestamp)
+                return timestamp
         self.response.headers['content-type'] = 'text/plain'
         self.response.write(json.dumps(r, default=date_converter))
 

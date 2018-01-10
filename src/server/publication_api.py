@@ -17,6 +17,7 @@ def dictify_pub(pub, summary=True):
     }
     if not summary:
         o['abstract'] = pub.abstract
+        o['dateSubmitted'] = pub.date_submitted
         o['gcsFilePath'] = pub.gcs_file_path
 
     return o

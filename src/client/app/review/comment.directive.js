@@ -43,6 +43,13 @@
       vm.submitResponse = submitResponse;
       vm.upvote = upvote;
 
+      activate();
+
+      function activate() {
+        vm.newResponse = '';
+        vm.comment.date = new Date(vm.comment.date);
+      }
+
       function downvote() {
         vm.comment.numVotes--;
         return pubService.vote(vm.comment.id, -1)
@@ -57,7 +64,7 @@
           vm.comment.id, {'text': vm.newResponse, 'author': 'anon'})
             .then(function(data) {
               vm.comment.responses.push(data.obj);
-              vm.newResponse = '';
+              activate();
             });
       }
 

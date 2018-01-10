@@ -5,9 +5,6 @@
     {{vm.response.numVotes}}
     <p class="md-subheading" layout-padding></p>
     <div class="md-list-item-text" layout="column" layout-fill>
-        <h4>{{vm.response.text}}</h4>
-        <div layout-align="end center" layout="row">
-            <p>{{vm.response.author}} at {{vm.response.date}}</p>
-        </div>
+        <p class="md-caption">{{vm.response.text}} -- <a href="">{{vm.response.author}}</a> <span am-time-ago="vm.response.date"></span></p>
     </div>
 </div>
