@@ -32,7 +32,7 @@
         </md-card>
     <div>
     <div id="commentsContainer" layout-align="end center" layout-padding>
-        <div data-ng-repeat="comment in vm.pub.comments">
+        <div data-ng-repeat="comment in vm.pub.comments | orderBy:'-numVotes'">
             <comment-card comment="comment"></comment-card>
         </div>
     </div>

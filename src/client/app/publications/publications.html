@@ -5,7 +5,7 @@
             <md-button class="md-raised md-primary" href="/#/submit" ng-disabled="false" aria-label="submit a publication" md-no-ink="false" md-ripple-size="full">Submit Publication</md-button>
         </div>
     </div>
-    <md-card data-ng-repeat="p in vm.pubs" layout="row">
+    <md-card data-ng-repeat="p in vm.pubs | orderBy:'-dateSubmitted'" layout="row">
         <div class="statscontainer" layout-padding layout-align="space-between center" layout="column">
             <div class="vote" layout-align="space-between center" layout="column">
                 <div class="vote-count-post">{{p.numVotes}}</div>

@@ -8,6 +8,7 @@ import logging
 def dictify_pub(pub, summary=True):
     o = {
         'id': pub.key.urlsafe(),
+        'dateSubmitted': pub.date_submitted,
         'title': pub.title,
         'summary': pub.summary,
         'numVotes': pub.num_votes,
@@ -17,7 +18,6 @@ def dictify_pub(pub, summary=True):
     }
     if not summary:
         o['abstract'] = pub.abstract
-        o['dateSubmitted'] = pub.date_submitted
         o['gcsFilePath'] = pub.gcs_file_path
 
     return o
@@ -69,7 +69,7 @@ def get_with_descendants(urlkey):
     pubdict = get(urlkey)
     pubkey = ndb.Key(urlsafe=urlkey)
     comments = Comment.query(
-        ancestor=pubkey).order(-Comment.date).fetch()
+        ancestor=pubkey).order(-Comment.num_votes).fetch()
     crs = CommentResponse.query(
         ancestor=pubkey).order(-CommentResponse.date).fetch()
     # Create dict with values sorted by date

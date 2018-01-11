@@ -25,7 +25,7 @@
             </md-card-content>
             <md-card-footer>
                 <md-list class="md-dense" flex>
-                    <md-list-item class="md-2-line" data-ng-repeat="response in vm.comment.responses">
+                    <md-list-item class="md-2-line" data-ng-repeat="response in vm.comment.responses | orderBy:'date'">
                         <comment-response response="response" layout-fill></comment-response>
                     </md-list-item>
                 </md-list>
