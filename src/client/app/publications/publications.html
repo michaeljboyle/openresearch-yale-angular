@@ -2,7 +2,7 @@
     <div layout="row" layout-align="space-between center">
         <h1>Publications</h1>
         <div>
-            <md-button class="md-raised md-primary" href="/#/submit" ng-disabled="false" aria-label="submit a publication" md-no-ink="false" md-ripple-size="full">Submit Publication</md-button>
+            <md-button class="md-raised md-primary" ui-sref="submit" ng-disabled="false" aria-label="submit a publication" md-no-ink="false" md-ripple-size="full">Submit Publication</md-button>
         </div>
     </div>
     <md-card data-ng-repeat="p in vm.pubs | orderBy:'-dateSubmitted'" layout="row">
@@ -23,7 +23,7 @@
         <div>
             <md-card-title>
               <md-card-title-text>
-                <span class="md-headline"><a ng-href="#/review/{{p.id}}">{{p.title}}</a></span>
+                <span class="md-headline"><a ui-sref="review({pubId: p.id})">{{p.title}}</a></span>
               </md-card-title-text>
             </md-card-title>
             <md-card-content>

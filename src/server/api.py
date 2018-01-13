@@ -1,12 +1,20 @@
 from publication import Publication
 from comment import Comment
 from comment_response import CommentResponse
+from user import User
+
 from google.appengine.ext import ndb
 import logging
 
 
+def doc_api_path():
+    return '/api/doc'
+
+
 def dictify_pub(pub, summary=True):
+    # user = pub.user.get()
     o = {
+        'authors': pub.authors,
         'id': pub.key.urlsafe(),
         'dateSubmitted': pub.date_submitted,
         'title': pub.title,
@@ -14,22 +22,24 @@ def dictify_pub(pub, summary=True):
         'numVotes': pub.num_votes,
         'numComments': pub.num_comments,
         'numViews': pub.num_views,
-        'tags': pub.tags
+        'tags': pub.tags,
+        # 'user': {'id': pub.user.urlsafe(), 'username': user.username}
     }
     if not summary:
         o['abstract'] = pub.abstract
-        o['gcsFilePath'] = pub.gcs_file_path
+        o['docUrl'] = '{}{}'.format(doc_api_path(), pub.gcs_file_path)
 
     return o
 
 
 def dictify_comment(comment):
+    # user = comment.user.get()
     o = {
         'id': comment.key.urlsafe(),
-        'author': comment.author,
         'date': comment.date,
         'numVotes': comment.num_votes,
-        'text': comment.text
+        'text': comment.text,
+        # 'user': {'id': comment.user.urlsafe(), 'username': user.username}
     }
     return o
 
@@ -56,7 +66,8 @@ def new(d):
     p.summary = d['summary']
     # p.tags = d['tags'] or []
     p.title = d['title']
-    return p.put().urlsafe()
+    p.put()
+    return dictify_pub(p)
 
 
 def get(urlkey):
@@ -113,3 +124,20 @@ def vote(urlkey, n):
     else:
         item.downvote()
     return dictify(item)
+
+
+def new_user(data):
+    u = User()
+    u.about = data['about']
+    u.affiliation = data['affiliation']
+    u.badges = []
+    u.comments = []
+    u.display_name = data['dispayName']
+    u.email = data['email']
+    u.location_id = data['locationId']
+    u.pubs = []
+    u.reputation = 0
+    u.tags = []
+    u.votes = []
+    u.put()
+    return u

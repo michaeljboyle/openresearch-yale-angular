@@ -16,8 +16,20 @@ indexes:
   - name: date
     direction: desc
 
+- kind: Comment
+  ancestor: yes
+  properties:
+  - name: num_votes
+    direction: desc
+
 - kind: CommentResponse
   ancestor: yes
   properties:
   - name: date
+    direction: desc
+
+- kind: Publication
+  ancestor: yes
+  properties:
+  - name: num_votes
     direction: desc

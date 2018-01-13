@@ -3,16 +3,23 @@
 
   angular
     .module('oryale.submit')
-    .config(config);
+    .run(appRun);
 
-  config.$inject = ['$routeProvider'];
+  appRun.$inject = ['routerHelper'];
 
-  function config($routeProvider) {
-    $routeProvider
-      .when('/submit', {
-        templateUrl: 'app/submit/submit.html',
-        controller: 'SubmitController',
-        controllerAs: 'vm',
-      });
+  function appRun(routerHelper) {
+    routerHelper.configureStates(getStates());
+
+    function getStates() {
+      return [
+        {
+          state: 'submit',
+          config: {
+            url: '/submit',
+            component: 'submitComponent',
+          },
+        },
+      ];
+    }
   }
 })();

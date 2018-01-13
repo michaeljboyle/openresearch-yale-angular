@@ -24,7 +24,7 @@
 </head>
 <body>
     <div layout="column" layout-padding layout-wrap>
-        <div data-ng-view></div>
+        <div ui-view></div>
     </div>
 
     <!-- inject-vendor:js -->
@@ -40,7 +40,7 @@
     <script src="assets/libs/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/1.2.0/angular-moment.min.js"></script>
 
-    <!-- <script src="//unpkg.com/@uirouter/angularjs/release/angular-ui-router.min.js"></script> -->
+    <script src="//unpkg.com/@uirouter/angularjs/release/angular-ui-router.min.js"></script>
     <!-- endinject -->
 
 
@@ -51,9 +51,11 @@
 
     <!-- Reusable Blocks/Modules -->
 
+
     <!-- core module -->
+    <script src="app/core/core.module.js"></script>
+    <script src="app/core/routerHelperProvider.js"></script>
     <script src="app/core/publications.service.js"></script>
-    <script src="app/core/submit.service.js"></script>
 
     <!-- publications -->
     <script src="app/publications/publications.module.js"></script>

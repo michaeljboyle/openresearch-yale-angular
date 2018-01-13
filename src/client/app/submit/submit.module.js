@@ -3,8 +3,6 @@
 
   angular
     .module('oryale.submit', [
-      'ngMaterial',
-      'ngRoute',
       'angularFileUpload',
     ]);
 })();

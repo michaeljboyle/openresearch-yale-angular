@@ -3,7 +3,7 @@ import webapp2
 import logging
 from datetime import datetime
 
-import publication_api as pub
+import api
 import gcs_api as gcs
 
 
@@ -41,11 +41,12 @@ class PubNoKeyHandler(RestHandler):
         try:
             r['file_path'] = gcs.upload(file_data)
             logging.info('file path is %s' % r['file_path'])
-            key = pub.new(r)
-            self.SendJson({'key': key, 'success': True})
+            pub = api.new(r)
+            logging.info('returning new pub')
+            self.SendJson({'obj': pub, 'success': True})
         except:
             logging.error('Something went wrong with file upload')
-            self.SendJson({'key': None, 'success': False})
+            self.SendJson({'success': False})
 
     # def get(self):
     #     posts = Post.get_all()
@@ -57,7 +58,7 @@ class PubKeyHandler(RestHandler):
 
     def get(self):
         urlkey = get_path_id(self.request.path)
-        p = pub.get_with_descendants(urlkey)
+        p = api.get_with_descendants(urlkey)
         self.SendJson(p)
 
     # # Only modifies votes
@@ -74,7 +75,8 @@ class PubKeyHandler(RestHandler):
 class PubListHandler(RestHandler):
 
     def get(self):
-        pubs = pub.get_pub_list()
+        logging.info('get_pub_list')
+        pubs = api.get_pub_list()
         self.SendJson(pubs)
 
 
@@ -95,7 +97,7 @@ class CommentKeyHandler(RestHandler):
         logging.info(self.request.body)
         data = json.loads(self.request.body)
         urlkey = get_path_id(self.request.path)
-        c = pub.new_comment(urlkey, data)
+        c = api.new_comment(urlkey, data)
         self.SendJson({'obj': c, 'success': True})
 
 
@@ -105,7 +107,7 @@ class CommentResponseKeyHandler(RestHandler):
         logging.info(self.request.body)
         data = json.loads(self.request.body)
         urlkey = get_path_id(self.request.path)
-        cr = pub.new_comment_response(urlkey, data)
+        cr = api.new_comment_response(urlkey, data)
         self.SendJson({'obj': cr, 'success': True})
 
 
@@ -116,7 +118,7 @@ class VoteResponseHandler(RestHandler):
         data = json.loads(self.request.body)
         n = data['n']
         urlkey = get_path_id(self.request.path)
-        obj = pub.vote(urlkey, n)
+        obj = api.vote(urlkey, n)
         self.SendJson({'obj': obj, 'success': True})
 
 
@@ -124,7 +126,7 @@ app = webapp2.WSGIApplication([
   ('/api/pub', PubNoKeyHandler),
   ('/api/pub/.*', PubKeyHandler),
   ('/api/getPubList', PubListHandler),
-  ('/api/doc/.*/.*', DocKeyHandler),
+  ('{}/.*/.*'.format(api.doc_api_path()), DocKeyHandler),
   ('/api/postComment/.*', CommentKeyHandler),
   ('/api/postCommentResponse/.*', CommentResponseKeyHandler),
   ('/api/vote/.*', VoteResponseHandler)

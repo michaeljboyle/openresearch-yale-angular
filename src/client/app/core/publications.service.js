@@ -2,29 +2,39 @@
   'use strict';
 
   angular
-    .module('oryale')
+    .module('oryale.core')
     .factory('pubService', pubService);
 
-  pubService.$inject = ['$http', '$log'];
+  pubService.$inject = ['$http', '$log', '$upload', '$q'];
 
   /* @ngInject */
-  function pubService($http, $log) {
+  function pubService($http, $log, $upload, $q) {
+    var submittedPub = false;
+
     var service = {
+      'addSubmittedPub': addSubmittedPub,
       'getDocUrl': getDocUrl,
       'getPubList': getPubList,
       'getPub': getPub,
       'postComment': postComment,
       'postCommentResponse': postCommentResponse,
+      'submit': submit,
+      'submittedPub': submittedPub,
       'vote': vote,
     };
 
     return service;
 
+    function addSubmittedPub(pub) {
+      var deferred = $q.defer();
+      submittedPub = pub;
+      deferred.resolve();
+      return deferred.promise;
+    }
 
     function getDocUrl(gcsFilePath) {
       return '/api/doc' + gcsFilePath;
     }
-
 
     function getPubList() {
       return $http.get('/api/getPubList')
@@ -35,6 +45,11 @@
 
       function getPubListComplete(data, status, headers, config) {
         $log.log('Retrieved pubs. Count=' + data.data.length);
+        if (submittedPub != false) {
+          // Add the just submitted pub
+          data.data.push(submittedPub);
+          submittedPub = false;
+        }
         return data.data;
       }
     }
@@ -74,6 +89,16 @@
       function postCommentResponseComplete(data, status, headers, config) {
         return data.data;
       }
+    }
+
+    function submit(data, files) {
+      return $upload.upload({
+        url: 'api/pub',
+        data: data,
+        file: files,
+        method: 'POST',
+        sendDataAsJson: true,
+      });
     }
 
     function vote(id, n) {

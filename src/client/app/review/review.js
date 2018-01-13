@@ -1,36 +1,36 @@
 (function() {
   'use strict';
 
+  var reviewConfig = {
+    bindings: {
+      pub: '<',
+    },
+    controller: ReviewController,
+    controllerAs: 'vm',
+    templateUrl: 'app/review/review.html',
+  };
+
   angular
     .module('oryale.review')
-    .controller('ReviewController', ReviewController);
+    .component('reviewComponent', reviewConfig);
 
-  ReviewController.$inject = [
-    '$routeParams', 'pubService', '$log', '$location'];
+  ReviewController.$inject = ['pubService', '$log', '$location'];
 
   /* @ngInject */
-  function ReviewController($routeParams, pubService, $log, $location) {
+  function ReviewController(pubService, $log, $location) {
     var vm = this;
-    vm.docUrl = '';
     vm.downvote = downvote;
     vm.isUpvoted = false;
     vm.isDownvoted = false;
     vm.newComment = '';
+    vm.$onInit = onInit;
     vm.pub = {};
     vm.submitComment = submitComment;
     vm.upvote = upvote;
 
-    activate();
-
     // //////////////
 
-    function activate() {
-      return getPub().then(function() {
-        vm.newComment = '';
-        vm.pub.dateSubmitted = new Date(vm.pub.dateSubmitted);
-        $log.info(vm.pub);
-        $log.info('Activated review view');
-      });
+    function onInit() {
     }
 
     function downvote() {
@@ -43,14 +43,6 @@
         });
     }
 
-    function getPub() {
-      var id = $routeParams.id;
-      return pubService.getPub(id).then(function(data) {
-        vm.pub = data;
-        vm.docUrl = pubService.getDocUrl(vm.pub.gcsFilePath);
-        return vm.pub;
-      });
-    }
 
     function submitComment() {
       return pubService.postComment(

@@ -4,6 +4,7 @@ from google.appengine.ext import ndb
 class Publication(ndb.Model):
     """A model for representing a publication."""
     abstract = ndb.TextProperty()
+    authors = ndb.StringProperty(repeated=True)
     date_submitted = ndb.DateTimeProperty(auto_now_add=True)
     num_comments = ndb.IntegerProperty()
     num_views = ndb.IntegerProperty()
@@ -12,6 +13,7 @@ class Publication(ndb.Model):
     summary = ndb.TextProperty()
     tags = ndb.StringProperty(repeated=True)
     title = ndb.StringProperty()
+    user = ndb.KeyProperty()
 
     def add_comment(self):
         self.num_comments += 1

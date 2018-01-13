@@ -1,14 +1,20 @@
 (function() {
   'use strict';
 
+  var submitConfig = {
+    templateUrl: 'app/submit/submit.html',
+    controller: SubmitController,
+    controllerAs: 'vm',
+  };
+
   angular
     .module('oryale.submit')
-    .controller('SubmitController', SubmitController);
+    .component('submitComponent', submitConfig);
 
-  SubmitController.$inject = ['submitService', '$log', '$mdToast', '$location'];
+  SubmitController.$inject = ['pubService', '$log', '$mdToast', '$state'];
 
   /* @ngInject */
-  function SubmitController(submitService, $log, $mdToast, $location) {
+  function SubmitController(pubService, $log, $mdToast, $state) {
     var vm = this;
     vm.abstract = '';
     vm.file;
@@ -38,24 +44,29 @@
         'title': vm.title,
       };
       var files = vm.file;
-      submitService.submit(data, files)
+      pubService.submit(data, files)
         .progress(submitProgress)
         .then(submitComplete);
 
       function submitProgress(evt) {
         vm.uploadProgress = parseInt(100.0 * evt.loaded / evt.total);
-        $log.info('progress: ' + vm.uploadProgress +
-                  '% file :'+ evt.config.file.name);
+        $log.info('progress: ' + vm.uploadProgress + '%');
       }
 
       function submitComplete(data) {
         reset();
+        // Send this new post to pubService so it can be added to list
+        // It will not likely be included in GET call to api because not in one
+        // entity group. this is a workaround for that
         var message = 'Submission failed...';
         if (data.data.success == true) {
           message = 'Submission Complete!';
+          pubService.addSubmittedPub(data.data.obj)
+            .then(function() {
+              showToast(message);
+              $state.go('publications');
+            });
         }
-        showToast(message);
-        $location.path('/');
       }
 
       function showToast(message) {
