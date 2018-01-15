@@ -5,9 +5,9 @@
     .module('oryale.publications')
     .run(appRun);
 
-  appRun.$inject = ['routerHelper'];
+  appRun.$inject = ['routerHelper', 'USER_ROLES'];
 
-  function appRun(routerHelper) {
+  function appRun(routerHelper, USER_ROLES) {
     routerHelper.configureStates(getStates());
 
     function getStates() {
@@ -21,6 +21,9 @@
             resolve: {
               pubs: loadData,
               submittedPub: getSubmittedPub,
+            },
+            data: {
+              authorizedRoles: [USER_ROLES.guest, USER_ROLES.user, USER_ROLES.admin],
             },
           },
         },

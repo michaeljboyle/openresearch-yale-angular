@@ -1,0 +1,26 @@
+<form ng-cloak name="loginForm" novalidate>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Login</h2>
+        <span flex></span>
+      </div>
+    </md-toolbar>
+    <md-content>
+        <div class="md-dialog-content" layout="column">
+            <md-input-container>
+                <label for="username">Email:</label>
+                <input type="text" id="email"
+                       ng-model="vm.credentials.email">
+            </md-input-container>
+            <md-input-container>
+                <label for="password">Password:</label>
+                <input type="password" id="password"
+                       ng-model="vm.credentials.password">
+            </md-input-container>
+        </div>
+    </md-content>
+    <md-actions layout="row">
+        <span flex></span>
+        <md-button data-ng-click="vm.login(vm.credentials)">Login</md-button>
+    </md-actions>
+</form>

@@ -5,9 +5,9 @@
     .module('oryale.review')
     .run(appRun);
 
-  appRun.$inject = ['routerHelper'];
+  appRun.$inject = ['routerHelper', 'USER_ROLES'];
 
-  function appRun(routerHelper) {
+  function appRun(routerHelper, USER_ROLES) {
     routerHelper.configureStates(getStates());
 
     function getStates() {
@@ -19,6 +19,10 @@
             component: 'reviewComponent',
             resolve: {
               pub: loadData,
+            },
+            data: {
+              authorizedRoles: [
+                USER_ROLES.guest, USER_ROLES.user, USER_ROLES.admin],
             },
           },
         },
