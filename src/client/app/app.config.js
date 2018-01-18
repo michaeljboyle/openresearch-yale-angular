@@ -3,9 +3,10 @@
     .module('oryale')
     .config(configure);
 
-  configure.$inject = ['$mdThemingProvider'];
+  configure.$inject = ['$mdThemingProvider', '$urlRouterProvider'];
 
-  function configure($mdThemingProvider) {
+  function configure($mdThemingProvider, $urlRouterProvider) {
+    $urlRouterProvider.when('', '/');
     $mdThemingProvider
       .theme('default')
       .primaryPalette('indigo')

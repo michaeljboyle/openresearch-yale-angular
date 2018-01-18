@@ -40,6 +40,11 @@
         .then(function(data) {
           vm.pub.numVotes = data.obj.numVotes;
           $log.info('downvoted!');
+        })
+        .catch(function(data) {
+          vm.pub.numVotes++;
+          vm.isDownvoted = false;
+          $log.info('downvote failed');
         });
     }
 

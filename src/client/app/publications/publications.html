@@ -1,9 +1,8 @@
 <div layout-align="space-between none" >
     <div layout="row" layout-align="space-between center">
         <h1>Publications</h1>
-        <div>
-            <md-button class="md-raised md-primary" ui-sref="submit" ng-disabled="false" aria-label="submit a publication" md-no-ink="false" md-ripple-size="full">Submit Publication</md-button>
-        </div>
+        <span flex></span>
+        <md-button class="md-raised md-accent" ui-sref="submit" ng-disabled="false" aria-label="submit a publication" md-no-ink="false" md-ripple-size="full">Submit Publication</md-button>
     </div>
     <md-card data-ng-repeat="p in vm.pubs | orderBy:'-dateSubmitted'" layout="row">
         <div class="statscontainer" layout-padding layout-align="space-between center" layout="column">

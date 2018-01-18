@@ -1,10 +1,12 @@
 from publication import Publication
 from comment import Comment
 from comment_response import CommentResponse
-from user import User
+from user import User, Roles
 
 from google.appengine.ext import ndb
 import logging
+
+import datetime
 
 
 def doc_api_path():
@@ -127,17 +129,43 @@ def vote(urlkey, n):
 
 
 def new_user(data):
-    u = User()
-    u.about = data['about']
-    u.affiliation = data['affiliation']
+    u = User(id=data['email'])
+    u.about = data.get('about', '')
+    u.affiliations = [data.get('affiliation', '')]
     u.badges = []
     u.comments = []
-    u.display_name = data['dispayName']
-    u.email = data['email']
-    u.location_id = data['locationId']
+    u.display_name = data['displayName']
+    # u.email = data['email']
+    u.location_id = data.get('locationId', '')
+    # u.password = data['password']
+    u.photo_gcs_path = data.get('photo_path', None)
     u.pubs = []
     u.reputation = 0
+    u.role = Roles.USER
     u.tags = []
     u.votes = []
     u.put()
-    return u
+    return u.as_dict(verbose=True, api_prefix=doc_api_path())
+
+
+def get_user(email):
+    u = User.get_by_id(email)
+    return u.as_dict(verbose=False)
+
+
+# def validate_credentials(data):
+#     email = data['email']
+#     pw = data['password']
+#     # try:
+#     logging.info('getting user by id %s' % email)
+#     user = User.get_by_id(email)
+#     logging.info('made it here %s' % user.display_name)
+#     if pw == user.password:
+#         return True
+#     else:
+#         return False
+#     # except:
+#     #     return False
+
+
+

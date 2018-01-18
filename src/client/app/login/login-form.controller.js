@@ -6,15 +6,16 @@
     .controller('LoginFormController', LoginFormController);
 
   LoginFormController.$inject = [
-    'authService', 'AUTH_EVENTS', '$log', '$mdDialog'];
+    'authService', 'AUTH_EVENTS', '$log', '$mdDialog', '$state'];
 
   /* @ngInject */
-  function LoginFormController(authService, AUTH_EVENTS, $log, $mdDialog) {
+  function LoginFormController(authService, AUTH_EVENTS, $log, $mdDialog, $state) {
     var vm = this;
     vm.cancel = cancel;
     vm.credentials = {email: '', password: ''};
     vm.login = login;
     vm.$onInit = onInit;
+    vm.signup = signup;
 
     function onInit() {
       $log.info('login page activate');
@@ -42,6 +43,11 @@
         $mdDialog.cancel('Login failed');
         // $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
       }
+    }
+
+    function signup() {
+      $mdDialog.cancel('cancelled, signup selected');
+      $state.go('signup');
     }
   }
 })();

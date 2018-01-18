@@ -1,0 +1,35 @@
+<md-content layout-padding layout-align="space-between none" >
+    <div layout="row" layout-align="space-between center">
+        <h1>Create an account</h1>
+    </div>
+    <div layout="column">
+        <md-input-container>
+            <label>Email</label>
+            <input type="text" ng-model="vm.email" required>
+        </md-input-container>
+        <md-input-container>
+            <label>Password</label>
+            <input type="password" ng-model="vm.password" required>
+        </md-input-container>
+        <md-input-container>
+            <label>Display Name</label>
+            <input ng-model="vm.displayName" required>
+        </md-input-container>
+        <md-input-container>
+            <label>About</label>
+            <input ng-model="vm.about" required>
+        </md-input-container>
+        <md-input-container>
+            <label>Affiliation</label>
+            <input ng-model="vm.affiliation" required>
+        </md-input-container>
+        <!-- <md-input-container>
+            <md-button ng-file-select class="md-raised" ng-model="vm.file" aria-label="upload">Upload Profile Photo</md-button>
+        </md-input-container> -->
+        <div layout="row">
+            <md-button class="md-raised md-primary" ng-click="vm.submit()" ng-disabled="vm.submitting">Create Account
+            </md-button>
+            <md-progress-circular md-mode="determinate" ng-show="vm.submitting" value="{{vm.uploadProgress}}"></md-progress-circular>
+        </div>
+    </div>
+</md-content>

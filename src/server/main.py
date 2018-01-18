@@ -5,6 +5,7 @@ from datetime import datetime
 
 import api
 import gcs_api as gcs
+import auth
 
 
 def get_path_id(path):
@@ -33,14 +34,20 @@ class PubNoKeyHandler(RestHandler):
 
     def post(self):
         try:
+            auth.verify_token(self.request)
+        except auth.AuthError, e:
+            self.response.set_status(e.status_code)
+            self.response.write(e.error)
+            return
+        r = json.loads(self.request.get('data'))
+        try:
             file_data = self.request.get('file')
+            r['file_path'] = gcs.upload(file_data)
+            logging.info('file path is %s' % r['file_path'])
         except KeyError:
             logging.error('"file" not in upload keys')
 
-        r = json.loads(self.request.get('data'))
         try:
-            r['file_path'] = gcs.upload(file_data)
-            logging.info('file path is %s' % r['file_path'])
             pub = api.new(r)
             logging.info('returning new pub')
             self.SendJson({'obj': pub, 'success': True})
@@ -94,6 +101,12 @@ class DocKeyHandler(RestHandler):
 class CommentKeyHandler(RestHandler):
 
     def post(self):
+        try:
+            auth.verify_token(self.request)
+        except auth.AuthError, e:
+            self.response.set_status(e.status_code)
+            self.response.write(e.error)
+            return
         logging.info(self.request.body)
         data = json.loads(self.request.body)
         urlkey = get_path_id(self.request.path)
@@ -104,6 +117,12 @@ class CommentKeyHandler(RestHandler):
 class CommentResponseKeyHandler(RestHandler):
 
     def post(self):
+        try:
+            auth.verify_token(self.request)
+        except auth.AuthError, e:
+            self.response.set_status(e.status_code)
+            self.response.write(e.error)
+            return
         logging.info(self.request.body)
         data = json.loads(self.request.body)
         urlkey = get_path_id(self.request.path)
@@ -114,12 +133,85 @@ class CommentResponseKeyHandler(RestHandler):
 class VoteResponseHandler(RestHandler):
 
     def post(self):
+        try:
+            auth.verify_token(self.request)
+        except auth.AuthError, e:
+            self.response.set_status(e.status_code)
+            self.response.write(e.error)
+            return
         logging.info(self.request.body)
         data = json.loads(self.request.body)
         n = data['n']
         urlkey = get_path_id(self.request.path)
         obj = api.vote(urlkey, n)
         self.SendJson({'obj': obj, 'success': True})
+
+
+# class LoginResponseHandler(RestHandler):
+
+#     def post(self):
+#         logging.info('login')
+#         logging.info(self.request.body)
+#         data = json.loads(self.request.body)
+#         logging.info(data)
+#         if api.validate_credentials(data):
+#             token = auth.create_token(data['email'])
+#             user = api.get_user(data['email'])
+#             response = {
+#                 'auth': token,
+#                 'user': user,
+#             }
+#             self.SendJson(response)
+#         else:
+#             self.response.set_status(401)
+
+
+class UserNoKeyHandler(RestHandler):
+
+    def post(self):
+        try:
+            auth.verify_token(self.request)
+        except auth.AuthError, e:
+            self.response.set_status(e.status_code)
+            self.response.write(e.error)
+            return
+
+        r = json.loads(self.request.get('data'))
+        file_data = self.request.get('file', None)
+        if file_data is not None:
+            try:
+                r['photo_path'] = gcs.upload(file_data)
+                logging.info('photo path is %s' % r['photo_path'])
+            except:
+                logging.error('Something went wrong with file upload')
+                self.response.set_status(500)
+                self.response.write('Something went wrong with file upload')
+        try:
+            user = api.new_user(r)
+            logging.info('returning new acct')
+            self.SendJson(user)
+        except Exception, e:
+            logging.info(str(e))
+            self.response.set_status(500)
+            self.response.write(str(e))
+
+
+class UserKeyHandler(RestHandler):
+
+    def get(self):
+        try:
+            auth.verify_token(self.request)
+        except auth.AuthError, e:
+            self.response.set_status(e.status_code)
+            self.response.write(e.error)
+            return
+        email = get_path_id(self.request.path)
+        try:
+            user = api.get_user(email)
+            self.SendJson(user)
+        except:
+            self.response.set_status(404)
+            self.response.write('Resource not found')
 
 
 app = webapp2.WSGIApplication([
@@ -129,5 +221,8 @@ app = webapp2.WSGIApplication([
   ('{}/.*/.*'.format(api.doc_api_path()), DocKeyHandler),
   ('/api/postComment/.*', CommentKeyHandler),
   ('/api/postCommentResponse/.*', CommentResponseKeyHandler),
-  ('/api/vote/.*', VoteResponseHandler)
+  ('/api/vote/.*', VoteResponseHandler),
+  # ('/api/user/login', LoginResponseHandler),
+  ('/api/user', UserNoKeyHandler),
+  ('/api/user/.*', UserKeyHandler),
 ], debug=True)

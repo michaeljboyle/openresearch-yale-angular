@@ -42,7 +42,6 @@
 
   /* @ngInject */
   function getSubmittedPub($stateParams) {
-    console.log('gettingsubmitted pub');
     if (angular.equals($stateParams, {})) {
       return {};
     }
@@ -53,7 +52,6 @@
         pub[key] = $stateParams[key];
       }
     }
-    console.log('returning pub');
     console.log(pub);
     return pub;
   }

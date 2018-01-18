@@ -7,6 +7,8 @@
       'oryale.core',
 
       /* Feature areas */
+      'oryale.layout',
+      'oryale.user',
       'oryale.login',
       'oryale.submit',
       'oryale.publications',
