@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('oryale.login')
+    .module('oryale.signup')
     .run(appRun);
 
   appRun.$inject = ['routerHelper', 'USER_ROLES'];
@@ -13,12 +13,13 @@
     function getStates() {
       return [
         {
-          state: 'authenticated',
+          state: 'signup',
           config: {
-            url: '/authenticated',
-            component: 'loginCallback',
+            url: '/signup',
+            component: 'signupComponent',
             data: {
-              authorizedRoles: [USER_ROLES.guest, USER_ROLES.user, USER_ROLES.admin],
+              authorizedRoles: [
+                  USER_ROLES.guest, USER_ROLES.user, USER_ROLES.admin],
             },
           },
         },

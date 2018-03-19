@@ -8,6 +8,11 @@ class Comment(ndb.Model):
     text = ndb.TextProperty()
     user = ndb.KeyProperty()
 
+    RepUpvoted = 5
+    RepUpvoter = 0
+    RepDownvoted = -2
+    RepDownvoter = -1
+
     def upvote(self):
         self.num_votes += 1
         self.put()

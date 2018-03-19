@@ -25,7 +25,8 @@ def dictify_pub(pub, summary=True):
         'numComments': pub.num_comments,
         'numViews': pub.num_views,
         'tags': pub.tags,
-        # 'user': {'id': pub.user.urlsafe(), 'username': user.username}
+        'userId': pub.user.id(),
+        'userDisplayName': pub.user.get().display_name,
     }
     if not summary:
         o['abstract'] = pub.abstract
@@ -35,13 +36,13 @@ def dictify_pub(pub, summary=True):
 
 
 def dictify_comment(comment):
-    # user = comment.user.get()
     o = {
         'id': comment.key.urlsafe(),
         'date': comment.date,
         'numVotes': comment.num_votes,
         'text': comment.text,
-        # 'user': {'id': comment.user.urlsafe(), 'username': user.username}
+        'userDisplayName': comment.user.get().display_name,
+        'userId': comment.user.id(),
     }
     return o
 
@@ -61,6 +62,7 @@ def get_pub_list(count=20):
 def new(d):
     p = Publication()
     p.abstract = d['abstract']
+    p.authors = [author.strip() for author in d['authors']]
     p.gcs_file_path = d['file_path']
     p.num_comments = 0
     p.num_views = 0
@@ -68,6 +70,7 @@ def new(d):
     p.summary = d['summary']
     # p.tags = d['tags'] or []
     p.title = d['title']
+    p.user = ndb.Key(User, d['user'])
     p.put()
     return dictify_pub(p)
 
@@ -101,8 +104,8 @@ def new_comment(pubkey, data):
     parent_key.get().add_comment()
     c = Comment(parent=parent_key)
     c.text = data['text']
-    c.author = data['author']
     c.num_votes = 0
+    c.user = ndb.Key(User, data['user'])
     c.put()
     logging.info(c)
     return dictify_comment(c)
@@ -112,35 +115,44 @@ def new_comment_response(comment_key, data):
     parent_key = ndb.Key(urlsafe=comment_key)
     cr = CommentResponse(parent=parent_key)
     cr.text = data['text']
-    cr.author = data['author']
     cr.num_votes = 0
+    cr.user = ndb.Key(User, data['user'])
     cr.put()
     logging.info(cr)
     return dictify_comment(cr)
 
 
-def vote(urlkey, n):
+def vote(urlkey, d):
+    n = d['n']
+    poster = ndb.Key(User, d['user']).get()
     item = ndb.Key(urlsafe=urlkey).get()
+    author = item.user.get()
+    # Don't let user vote on own stuff
+    if poster.key == author.key:
+        raise Exception('You cannot vote on your own items')
     if n > 0:
         item.upvote()
+        poster.rep(item.RepUpvoter)
+        author.rep(item.RepUpvoted)
     else:
         item.downvote()
+        poster.rep(item.RepDownvoter)
+        author.rep(item.RepDownvoted)
     return dictify(item)
 
 
 def new_user(data):
-    u = User(id=data['email'])
+    u = User(id=data['id'])
     u.about = data.get('about', '')
     u.affiliations = [data.get('affiliation', '')]
     u.badges = []
     u.comments = []
     u.display_name = data['displayName']
-    # u.email = data['email']
+    u.email = data['email']
     u.location_id = data.get('locationId', '')
-    # u.password = data['password']
     u.photo_gcs_path = data.get('photo_path', None)
     u.pubs = []
-    u.reputation = 0
+    u.reputation = 1
     u.role = Roles.USER
     u.tags = []
     u.votes = []
@@ -148,24 +160,7 @@ def new_user(data):
     return u.as_dict(verbose=True, api_prefix=doc_api_path())
 
 
-def get_user(email):
-    u = User.get_by_id(email)
+def get_user(id):
+    u = User.get_by_id(id)
     return u.as_dict(verbose=False)
-
-
-# def validate_credentials(data):
-#     email = data['email']
-#     pw = data['password']
-#     # try:
-#     logging.info('getting user by id %s' % email)
-#     user = User.get_by_id(email)
-#     logging.info('made it here %s' % user.display_name)
-#     if pw == user.password:
-#         return True
-#     else:
-#         return False
-#     # except:
-#     #     return False
-
-
 

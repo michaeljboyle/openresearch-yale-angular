@@ -5,10 +5,10 @@
     .module('oryale.core')
     .factory('pubService', pubService);
 
-  pubService.$inject = ['$http', '$log', '$upload', '$q'];
+  pubService.$inject = ['$http', '$log', '$upload', '$q', 'authService'];
 
   /* @ngInject */
-  function pubService($http, $log, $upload, $q) {
+  function pubService($http, $log, $upload, $q, authService) {
     var submittedPub = false;
 
     var service = {
@@ -62,16 +62,19 @@
         });
 
       function getPubComplete(data, status, headers, config) {
-        $log.log('Retrieved pubs. ' + data.data);
+        $log.log('Retrieved pubs');
+        $log.info(data.data);
         return data.data;
       }
     }
 
     function postComment(parentId, data) {
+      data.user = authService.getFirebaseUser().uid;
       return $http.post('/api/postComment/' + parentId, data)
         .then(postCommentComplete)
         .catch(function(message) {
           $log.error(message);
+          throw message;
         });
 
       function postCommentComplete(data, status, headers, config) {
@@ -80,10 +83,12 @@
     }
 
     function postCommentResponse(parentId, data) {
+      data.user = authService.getFirebaseUser().uid;
       return $http.post('/api/postCommentResponse/' + parentId, data)
         .then(postCommentResponseComplete)
         .catch(function(message) {
           $log.error(message);
+          throw message;
         });
 
       function postCommentResponseComplete(data, status, headers, config) {
@@ -92,6 +97,7 @@
     }
 
     function submit(data, files) {
+      data.user = authService.getFirebaseUser().uid;
       return $upload.upload({
         url: 'api/pub',
         data: data,
@@ -102,10 +108,12 @@
     }
 
     function vote(id, n) {
-      return $http.post('/api/vote/' + id, {'n': n})
+      var data = {'n': n, 'user': authService.getFirebaseUser().uid};
+      return $http.post('/api/vote/' + id, data)
         .then(voteComplete)
         .catch(function(message) {
           $log.error(message);
+          throw message;
         });
 
       function voteComplete(data, status, headers, config) {

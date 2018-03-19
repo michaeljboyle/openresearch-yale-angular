@@ -18,12 +18,14 @@
     // //////////////
 
     function request(config) {
-      $log.info('route is ', config.url);
-      var token = $injector.get('authService').getAuthToken();
-      if (token) {
-        config.headers.Authorization = token;
-      }
-      return config;
+      return $injector.get('authService').getAuthToken()
+        .then(function(token) {
+          $log.info('route is ', config);
+          if (token) {
+            config.headers.Authorization = token;
+          }
+          return config;
+        });
     }
   }
 

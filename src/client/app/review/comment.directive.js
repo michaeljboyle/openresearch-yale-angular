@@ -31,9 +31,9 @@
     }
 
     /* @ngInject */
-    CommentController.$inject = ['pubService', '$log'];
+    CommentController.$inject = ['pubService', '$log', 'authService', 'loginDialogService'];
 
-    function CommentController(pubService, $log) {
+    function CommentController(pubService, $log, authService, loginDialogService) {
       var vm = this;
       vm.comment;
       vm.isDownvoted = false;
@@ -51,17 +51,34 @@
       }
 
       function downvote() {
+        if (!authService.isAuthenticated()) {
+          var msg = 'You must be signed in';
+          loginDialogService.showDialog(msg);
+          return;
+        }
         vm.comment.numVotes--;
+        vm.isDownvoted = true;
         return pubService.vote(vm.comment.id, -1)
           .then(function(data) {
             vm.comment.numVotes = data.obj.numVotes;
             $log.info('downvoted!');
+          })
+          .catch(function(data) {
+            vm.comment.numVotes++;
+            vm.isDownvoted = false;
+            $log.info('downvote failed');
+            alert(data.data);
           });
       }
 
       function submitResponse() {
+        if (!authService.isAuthenticated()) {
+          var msg = 'You must be signed in';
+          loginDialogService.showDialog(msg);
+          return;
+        }
         return pubService.postCommentResponse(
-          vm.comment.id, {'text': vm.newResponse, 'author': 'anon'})
+          vm.comment.id, {'text': vm.newResponse})
             .then(function(data) {
               vm.comment.responses.push(data.obj);
               activate();
@@ -69,11 +86,22 @@
       }
 
       function upvote() {
+        if (!authService.isAuthenticated()) {
+          var msg = 'You must be signed in';
+          loginDialogService.showDialog(msg);
+          return;
+        }
         vm.comment.numVotes++;
+        vm.isUpvoted = true;
         return pubService.vote(vm.comment.id, 1)
           .then(function(data) {
             vm.comment.numVotes = data.obj.numVotes;
             $log.info('upvoted!');
+          })
+          .catch(function(data) {
+            vm.comment.numVotes--;
+            vm.isUpvoted = false;
+            alert(data.data);
           });
       }
     }

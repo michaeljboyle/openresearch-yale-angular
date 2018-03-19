@@ -17,28 +17,24 @@
     };
   }
 
-  authService.$inject = ['$http', '$q', '$localStorage', 'moment', '$log', 'USER_ROLES', '$firebaseAuthService', 'userService'];
+  authService.$inject = ['$http', '$q', '$localStorage', 'moment', '$log', 'USER_ROLES', '$firebaseAuthService'];
 
   /* @ngInject */
-  function authService($http, $q, $localStorage, moment, $log, USER_ROLES, $firebaseAuthService, userService) {
+  function authService($http, $q, $localStorage, moment, $log, USER_ROLES, $firebaseAuthService) {
     var service = {
       createAccount: createAccount,
       getAuthToken: getAuthToken,
+      getFirebaseUser: getFirebaseUser,
       isAuthenticated: isAuthenticated,
-      isAuthorized: isAuthorized,
-      // login: login,
-      sessionCreate: sessionCreate,
-      sessionFetch: sessionFetch,
-      sessionDestroy: sessionDestroy,
-      sessionExpiration: sessionExpiration,
-      // setFirebaseUser: setFirebaseUser,
-      userHasStateAccess: userHasStateAccess,
+      login: login,
+      logout: logout,
+      updateFirebaseProfile: updateFirebaseProfile,
+      waitForToken: waitForToken,
     };
 
-    var storageKey = 'session';
-    var authenticated = false;
     var token = null;
-    var creatingNewAccount = false;
+    var user = null;
+    // $onIdTokenChanged(authStateChange); is from the 4.8.2 API
     $firebaseAuthService.$onAuthStateChanged(authStateChange);
 
     return service;
@@ -48,135 +44,131 @@
     function authStateChange(firebaseUser) {
       if (firebaseUser) {
         $log.info('firebaseUser is ', firebaseUser);
-        authenticated = true;
-        firebaseUser.getIdToken()
+        user = firebaseUser;
+        /* getToken for 3.3.0, getIdToken for 4.8.2. Was having network
+         * connectivity bug with 4.8.2 so reverted to 3.3.0 */
+        firebaseUser.getToken()
           .then(function(t) {
             token = t;
             $log.info('set token ', token.length);
-            if (!creatingNewAccount) {
-              userService.setUser(firebaseUser.email);
-            }
           });
       }
       else {
-        authenticated = false;
+        user = null;
         token = null;
-        userService.clearUser();
       }
     }
 
-    function createAccount(data, files) {
-      creatingNewAccount = true;
-      var email = data.email;
-      var pw = data.password;
-      // immediately remove password from the data object
-      delete data.password;
+    function createAccount(email, pw) {
+      $log.info('Creating firebase account');
       return $firebaseAuthService.$createUserWithEmailAndPassword(email, pw)
         .then(createAccountSuccess)
         .catch(createAccountFailed);
 
       function createAccountSuccess(firebaseUser) {
         $log.info('Firebase account created: ', firebaseUser);
-        // Before we can create the new user, we have
-        // to wait to set the token
-        firebaseUser.getIdToken()
-          .then(function(t) {
-            token = t;
-            return;
-          })
-          .then(function() {
-            return userService.createUser(data, files);
-          })
-          .then(function() {
-            creatingNewAccount = false;
-          });
+        user = firebaseUser;
+        return firebaseUser;
       }
 
       function createAccountFailed(error) {
         $log.error('Failed to create firebase account: ', error);
+        throw error;
       }
     }
 
+    function updateFirebaseProfile(name, photoUrl) {
+      if (!$firebaseAuthService.currentUser) {
+        return Error('Not authenticated');
+      }
+      else {
+        // Add user display name to firebase profile for ease of use later
+        var profile = {displayName: name};
+        user.displayName = name;
+        if (photoUrl) {
+          user.photoURL = photoUrl;
+          profile.photoURL = photoUrl;
+        }
+        $firebaseAuthService.currentUser.updateProfile(profile);
+      }
+    }
+
+
     function getAuthToken() {
-      $log.info('sending token ', token);
-      return token;
+      var deferred = $q.defer();
+      if (token) {
+        $log.info('token is length: ', token.length);
+        deferred.resolve(token);
+      }
+      else {
+        if (!user) {
+          $log.info('No current firebase user, token is null');
+          deferred.resolve(null);
+        }
+        else {
+          /* getToken for 3.3.0, getIdToken for 4.8.2. Was having network
+           * connectivity bug with 4.8.2 so reverted to 3.3.0 */
+          $log.info('user is ', user);
+          $log.info('user has fn getToken ', 'getToken' in user);
+          user.getToken()
+            .then(function(t) {
+              token = t;
+              $log.info('Token fetched and set with length: ', t.length);
+              deferred.resolve(t);
+            })
+            .catch(function(err) {
+              $log.info('user.getToken failed with ', err);
+              deferred.resolve(null);
+            });
+        }
+      }
+      return deferred.promise;
+    }
+
+
+    function getFirebaseUser() {
+      return user;
     }
 
     function isAuthenticated() {
-      try {
-        return moment().isBefore(sessionExpiration());
-      }
-      catch (e) {
-        // no session is logged
-        return false;
-      }
-    }
-
-    function isAuthorized(authorizedRoles) {
-      if (!angular.isArray(authorizedRoles)) {
-        authorizedRoles = [authorizedRoles];
-      }
-      return (authorizedRoles.indexOf(sessionFetch().userRole) !== -1);
-    }
-
-    // function login(credentials) {
-    //   $log.info('auth.service login');
-    //   return $http.post('/api/account/login', credentials)
-    //     .then(function(res) {
-    //       $log.info(res.data);
-    //       var auth = res.data.auth;
-    //       var user = res.data.user;
-    //       // store username and token in local storage to keep user logged in between page refreshes
-    //       sessionCreate(auth.token, auth.expiresIn, user.email, user.role);
-    //       // add jwt token to auth header for all requests made by the $http service
-    //       $http.defaults.headers.common.Authorization = 'Bearer ' + auth.token;
-    //       return user;
-    //     });
-    // }
-
-    function sessionCreate(token, expiresIn, email, role) {
-      $log.info('session: create');
-      var sessionData = {
-        token: token,
-        expiration: moment().add(expiresIn, 'second'),
-        userEmail: email,
-        userRole: role,
-      };
-      $localStorage[storageKey] = sessionData;
-    }
-
-    function sessionFetch() {
-      $log.info('session: fetching');
-      return $localStorage[storageKey];
-    }
-
-    function sessionDestroy() {
-      $log.info('session: destroy');
-      delete $localStorage[storageKey];
-    }
-
-    function sessionExpiration() {
-        var expiration = sessionFetch().expiration;
-        var expiresAt = angular.fromJson(expiration);
-        return moment(expiresAt);
-    }
-
-    function userHasStateAccess(authorizedRoles) {
-      var role = userService.getDefaultRole();
-      var user = userService.getUser();
-      $log.info($firebaseAuthService.currentUser);
-      $log.info(userService.getUser());
-      $log.info('authorized roles are', authorizedRoles);
-      if ($firebaseAuthService.currentUser && user) {
-        role = user.role;
-      }
-      $log.info(role);
-      if (authorizedRoles.indexOf(role) != -1) {
+      if (user) {
         return true;
       }
-      else {
-        return false;
-      }
+      return false;
+    }
+
+
+    function login(email, pw) {
+      $log.info('auth.service login');
+      return $firebaseAuthService.$signInWithEmailAndPassword(email, pw)
+        .then(function(fbuser) {
+          $log.info('Authentication success: ', fbuser);
+          user = fbuser;
+          return fbuser;
+        });
+        // .catch(function(error) {
+        //   $log.info('Authentication failed with error: ', error);
+        // });
+    }
+
+    function logout() {
+      $log.info('auth.service logout');
+      user = null;
+      token = null;
+      return $firebaseAuthService.$signOut();
+    }
+
+    /* A wrapper for getAuthToken that doesn't return a token, just waits
+     * for that token to return. For use when a fn doesn't need the token,
+     * just needs to wait for it to be set. */
+    function waitForToken() {
+      $log.info('Waiting for auth token');
+      var deferred = $q.defer();
+      getAuthToken()
+        .then(function(t) {
+          deferred.resolve(t);
+        });
+      return deferred.promise;
     }
   }
 })();

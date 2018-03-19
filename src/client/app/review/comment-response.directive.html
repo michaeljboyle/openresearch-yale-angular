@@ -5,6 +5,6 @@
     {{vm.response.numVotes}}
     <p class="md-subheading" layout-padding></p>
     <div class="md-list-item-text" layout="column" layout-fill>
-        <p class="md-caption">{{vm.response.text}} -- <a href="">{{vm.response.author}}</a> <span am-time-ago="vm.response.date"></span></p>
+        <p class="md-caption">{{vm.response.text}} -- <a ui-sref="user({userId: vm.response.userId})">{{vm.response.userDisplayName}}</a> <span am-time-ago="vm.response.date"></span></p>
     </div>
 </div>

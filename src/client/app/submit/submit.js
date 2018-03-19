@@ -17,6 +17,7 @@
   function SubmitController(pubService, $log, $mdToast, $state) {
     var vm = this;
     vm.abstract = '';
+    vm.authors = '';
     vm.file;
     vm.uploadProgress = 0;
     vm.submit = submit;
@@ -38,8 +39,10 @@
 
     function submit() {
       vm.submitting = true;
+      var authors = vm.authors.split(',');
       var data = {
         'abstract': vm.abstract,
+        'authors': authors,
         'summary': vm.summary,
         'title': vm.title,
       };

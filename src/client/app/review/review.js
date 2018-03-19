@@ -14,10 +14,10 @@
     .module('oryale.review')
     .component('reviewComponent', reviewConfig);
 
-  ReviewController.$inject = ['pubService', '$log', '$location'];
+  ReviewController.$inject = ['pubService', '$log', '$location', 'authService', 'loginDialogService'];
 
   /* @ngInject */
-  function ReviewController(pubService, $log, $location) {
+  function ReviewController(pubService, $log, $location, authService, loginDialogService) {
     var vm = this;
     vm.downvote = downvote;
     vm.isUpvoted = false;
@@ -34,6 +34,11 @@
     }
 
     function downvote() {
+      if (!authService.isAuthenticated()) {
+        var msg = 'You must be signed in';
+        loginDialogService.showDialog(msg);
+        return;
+      }
       vm.pub.numVotes--;
       vm.isDownvoted = true;
       return pubService.vote(vm.pub.id, -1)
@@ -45,13 +50,19 @@
           vm.pub.numVotes++;
           vm.isDownvoted = false;
           $log.info('downvote failed');
+          alert(data.data);
         });
     }
 
 
     function submitComment() {
-      return pubService.postComment(
-        vm.pub.id, {'text': vm.newComment, 'author': 'anon'})
+      if (!authService.isAuthenticated()) {
+        var msg = 'You must be signed in';
+        loginDialogService.showDialog(msg);
+        return;
+      }
+      pubService.postComment(
+        vm.pub.id, {'text': vm.newComment})
         .then(function(data) {
           vm.pub.comments.push(data.obj);
           vm.newComment = '';
@@ -59,12 +70,22 @@
     }
 
     function upvote() {
+      if (!authService.isAuthenticated()) {
+        var msg = 'You must be signed in';
+        loginDialogService.showDialog(msg);
+        return;
+      }
       vm.pub.numVotes++;
       vm.isUpvoted = true;
       return pubService.vote(vm.pub.id, 1)
         .then(function(data) {
           vm.pub.numVotes = data.obj.numVotes;
           $log.info('upvoted!');
+        })
+        .catch(function(data) {
+          vm.pub.numVotes--;
+          vm.isUpvoted = false;
+          alert(data.data);
         });
     }
   }

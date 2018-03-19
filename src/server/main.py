@@ -141,29 +141,14 @@ class VoteResponseHandler(RestHandler):
             return
         logging.info(self.request.body)
         data = json.loads(self.request.body)
-        n = data['n']
         urlkey = get_path_id(self.request.path)
-        obj = api.vote(urlkey, n)
-        self.SendJson({'obj': obj, 'success': True})
-
-
-# class LoginResponseHandler(RestHandler):
-
-#     def post(self):
-#         logging.info('login')
-#         logging.info(self.request.body)
-#         data = json.loads(self.request.body)
-#         logging.info(data)
-#         if api.validate_credentials(data):
-#             token = auth.create_token(data['email'])
-#             user = api.get_user(data['email'])
-#             response = {
-#                 'auth': token,
-#                 'user': user,
-#             }
-#             self.SendJson(response)
-#         else:
-#             self.response.set_status(401)
+        try:
+            obj = api.vote(urlkey, data)
+            self.SendJson({'obj': obj, 'success': True})
+        except Exception, e:
+            logging.error(str(e))
+            self.response.set_status(400)
+            self.response.write(str(e))
 
 
 class UserNoKeyHandler(RestHandler):
@@ -205,9 +190,9 @@ class UserKeyHandler(RestHandler):
             self.response.set_status(e.status_code)
             self.response.write(e.error)
             return
-        email = get_path_id(self.request.path)
+        id = get_path_id(self.request.path)
         try:
-            user = api.get_user(email)
+            user = api.get_user(id)
             self.SendJson(user)
         except:
             self.response.set_status(404)
@@ -222,7 +207,6 @@ app = webapp2.WSGIApplication([
   ('/api/postComment/.*', CommentKeyHandler),
   ('/api/postCommentResponse/.*', CommentResponseKeyHandler),
   ('/api/vote/.*', VoteResponseHandler),
-  # ('/api/user/login', LoginResponseHandler),
   ('/api/user', UserNoKeyHandler),
   ('/api/user/.*', UserKeyHandler),
 ], debug=True)

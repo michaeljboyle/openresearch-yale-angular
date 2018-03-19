@@ -37,8 +37,8 @@
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-resource.js"></script> -->
 
     <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase-app.js"></script> <!-- 4.8.2 -->
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase-auth.js"></script>
 
     <!-- Additional third party -->
     <script src="assets/libs/moment.min.js"></script>
@@ -75,14 +75,7 @@
     <script src="app/core/auth-interceptor.service.js"></script>
     <script src="app/core/transition.service.js"></script>
     <script src="app/core/transition.config.js"></script>
-
-    <!-- login -->
-    <script src="app/login/login.module.js"></script>
-    <!-- <script src="app/login/login.config.js"></script> -->
-    <script src="app/login/login.route.js"></script>
-    <script src="app/login/login-dialog.service.js"></script>
-    <script src="app/login/login-form.controller.js"></script>
-    <script src="app/login/login-callback.js"></script>
+    <script src="app/core/login-dialog.service.js"></script>
 
     <!-- publications -->
     <script src="app/publications/publications.module.js"></script>
@@ -102,11 +95,19 @@
     <script src="app/review/comment.directive.js"></script>
     <script src="app/review/comment-response.directive.js"></script>
 
+    <!-- signup -->
+    <script src="app/signup/signup.module.js"></script>
+    <script src="app/signup/signup.route.js"></script>
+    <script src="app/signup/signup.js"></script>
+
+    <!-- login -->
+    <script src="app/login/login.module.js"></script>
+    <script src="app/login/login-form.controller.js"></script>
+
     <!-- user -->
     <script src="app/user/user.module.js"></script>
     <script src="app/user/user.route.js"></script>
-    <script src="app/user/signup.js"></script>
-    <script src="app/user/file-model.directive.js"></script>
+    <script src="app/user/user.js"></script>
 
     <!-- layout -->
     <script src="app/layout/layout.module.js"></script>

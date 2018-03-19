@@ -15,6 +15,11 @@ class Publication(ndb.Model):
     title = ndb.StringProperty()
     user = ndb.KeyProperty()
 
+    RepUpvoted = 10
+    RepUpvoter = 0
+    RepDownvoted = -5
+    RepDownvoter = 0
+
     def add_comment(self):
         self.num_comments += 1
         self.put()

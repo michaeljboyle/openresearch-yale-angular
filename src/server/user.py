@@ -1,4 +1,5 @@
 from google.appengine.ext import ndb
+import logging
 
 
 class Roles:
@@ -15,10 +16,9 @@ class User(ndb.Model):
     comments = ndb.KeyProperty(repeated=True)
     date_joined = ndb.DateTimeProperty(auto_now_add=True)
     display_name = ndb.StringProperty()
-    # email = ndb.StringProperty()
-    # Email is stored as the Key ID
+    email = ndb.StringProperty()
+    last_seen = ndb.DateTimeProperty()
     location_id = ndb.StringProperty()
-    # password = ndb.StringProperty()
     photo_gcs_path = ndb.StringProperty()
     pubs = ndb.KeyProperty(repeated=True)
     reputation = ndb.IntegerProperty()
@@ -33,6 +33,7 @@ class User(ndb.Model):
             'badges': self.badges,
             'dateJoined': self.date_joined,
             'displayName': self.display_name,
+            'email': self.email,
             'locationId': self.location_id,
             'photoUrl': self.photo_gcs_path,
             'reputation': self.reputation,
@@ -46,3 +47,11 @@ class User(ndb.Model):
             o['tags'] = self.tags
             o['votes'] = self.votes
         return o
+
+    def rep(self, r):
+        logging.info('rep was ' + str(self.reputation))
+        self.reputation += r
+        if self.reputation < 1:
+            self.reputation = 1
+        logging.info('rep is now ' + str(self.reputation))
+        self.put()

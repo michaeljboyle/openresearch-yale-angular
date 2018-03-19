@@ -20,7 +20,7 @@
             <md-card-content>
                 <p class="md-subhead">{{vm.comment.text}}</p>
                 <div layout-align="end center" layout="row">
-                    <p><a ng-href="/">{{vm.comment.author}}</a> <span class="md-caption" am-time-ago="vm.comment.date"></span></p>
+                    <p><a ui-sref="user({userId: vm.comment.userId})">{{vm.comment.userDisplayName}}</a> <span class="md-caption" am-time-ago="vm.comment.date"></span></p>
                 </div>
             </md-card-content>
             <md-card-footer>

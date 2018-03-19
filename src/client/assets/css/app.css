@@ -3,3 +3,7 @@ input[type="file"] {
 
 .comment-card-content {
   width: 100%; }
+
+.link {
+  cursor: pointer;
+  text-decoration: underline; }

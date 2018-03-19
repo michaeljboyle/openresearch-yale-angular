@@ -6,46 +6,63 @@
     .controller('LoginFormController', LoginFormController);
 
   LoginFormController.$inject = [
-    'authService', 'AUTH_EVENTS', '$log', '$mdDialog', '$state'];
+    'userService', '$log', '$mdDialog', '$state', '$mdToast', 'dialogMessage'];
 
   /* @ngInject */
-  function LoginFormController(authService, AUTH_EVENTS, $log, $mdDialog, $state) {
+  function LoginFormController(userService, $log, $mdDialog, $state,
+                               $mdToast, dialogMessage) {
     var vm = this;
     vm.cancel = cancel;
-    vm.credentials = {email: '', password: ''};
+    vm.email = '';
+    vm.error = '';
+    vm.dialogMessage = dialogMessage || '';
+    vm.password = '';
     vm.login = login;
     vm.$onInit = onInit;
     vm.signup = signup;
 
     function onInit() {
       $log.info('login page activate');
-      // $rootScope.$on(AUTH_EVENTS.notAuthenticated, vm.showDialog);
-      // Create listener for show dialog
+    }
+
+    function clearMessages() {
+      vm.dialogMessage = '';
+      vm.error = '';
     }
 
     function cancel() {
+      clearMessages();
       $mdDialog.cancel('Login cancelled');
     }
 
-    function login(credentials) {
+    function login(email, pw) {
+      clearMessages();
       $log.info('login clicked');
-      authService.login(credentials)
-      .then(loginSuccess)
-      .catch(loginFail);
+      userService.login(email, pw)
+        .then(loginSuccess)
+        .catch(loginFail);
 
       function loginSuccess(user) {
-        $log.info('login success with user id: ' + user.id);
-        $mdDialog.hide('Login success!');
+        $log.info('login success with user: ', user);
+        $mdDialog.hide('Login success!')
+          .then(function() {
+            $mdToast.show(
+              $mdToast.simple()
+                .textContent('Logged in as ' + user.email)
+                .position('top')
+                .hideDelay(5000)
+            );
+          });
       }
 
       function loginFail() {
         $log.info('login failure');
-        $mdDialog.cancel('Login failed');
-        // $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+        vm.error = 'Incorrect username or password';
       }
     }
 
     function signup() {
+      clearMessages();
       $mdDialog.cancel('cancelled, signup selected');
       $state.go('signup');
     }

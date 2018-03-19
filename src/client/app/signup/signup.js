@@ -2,19 +2,19 @@
   'use strict';
 
   var signupConfig = {
-    templateUrl: 'app/user/signup.html',
+    templateUrl: 'app/signup/signup.html',
     controller: SignupController,
     controllerAs: 'vm',
   };
 
   angular
-    .module('oryale.user')
+    .module('oryale.signup')
     .component('signupComponent', signupConfig);
 
-  SignupController.$inject = ['authService', '$log', '$mdToast', '$state'];
+  SignupController.$inject = ['userService', '$log', '$mdToast', '$state'];
 
   /* @ngInject */
-  function SignupController(authService, $log, $mdToast, $state) {
+  function SignupController(userService, $log, $mdToast, $state) {
     var vm = this;
     vm.about = '';
     vm.affiliation = '';
@@ -48,7 +48,7 @@
         'password': vm.password,
       };
       var files = vm.file;
-      authService.createAccount(data, files)
+      userService.createUser(data, files)
         .then(submitComplete)
         .catch(submitFail);
 
@@ -57,13 +57,13 @@
         // Send this new post to pubService so it can be added to list
         // It will not likely be included in GET call to api because not in one
         // entity group. this is a workaround for that
-        showToast('Account create Complete!');
+        showToast('Account create complete!');
         $state.go('publications');
       }
 
-      function submitFail(data) {
-        var message = 'Account create failed...';
-        showToast(message);
+      function submitFail(error) {
+        showToast(error.message);
+        reset();
       }
 
       function showToast(message) {

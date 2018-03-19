@@ -1,4 +1,4 @@
-<div data-ng-controller="Shell as vm">
+<div data-ng-controller="ShellController as vm">
     <md-toolbar>
       <div class="md-toolbar-tools" class="md-hue-2">
        <!--  <md-button class="md-icon-button" aria-label="Settings" ng-disabled="true">
@@ -6,7 +6,9 @@
         </md-button> -->
 
         <h2 flex md-truncate><a ui-sref="publications">OpenResearch@Yale</a></h2>
-        <h1><a ui-sref="signup">{{vm.displayName}}</a></h1>
+        <h1><a ui-sref="user({userId: vm.uid})">{{vm.displayName}}</a></h1>
+        <md-button class="md-raised md-primary" data-ng-click="vm.signout()" data-ng-show="vm.authenticated" aria-label="sign out">sign out</md-button>
+        <md-button class="md-raised md-primary" data-ng-click="vm.signin()" data-ng-show="!vm.authenticated" aria-label="sign in">sign in</md-button>
 <!-- 
         <md-button class="md-icon-button" aria-label="More">
           <md-icon md-svg-icon="img/icons/more_vert.svg"></md-icon>

@@ -3,19 +3,22 @@
 
   angular
     .module('oryale.layout')
-    .controller('Shell', Shell);
+    .controller('ShellController', ShellController);
 
-  Shell.$inject = ['$timeout', '$log', '$firebaseAuthService'];
+  ShellController.$inject = ['$timeout', '$log', '$firebaseAuthService', 'authService', '$state', '$mdToast', 'loginDialogService', 'userService'];
 
-  function Shell($timeout, $log, $firebaseAuthService) {
+  function ShellController($timeout, $log, $firebaseAuthService, authService, $state, $mdToast, loginDialogService, userService) {
 
     var vm = this;
-
+    vm.authenticated = false;
     vm.title = 'OpenResearch@Yale';
     vm.busyMessage = 'Please wait ...';
     vm.displayName = '';
+    vm.uid = '';
     vm.isBusy = true;
     vm.showSplash = true;
+    vm.signin = signin;
+    vm.signout = signout;
     vm.$onInit = onInit;
 
 
@@ -31,7 +34,18 @@
 
     function authStateChange(firebaseUser) {
       if (firebaseUser) {
-        vm.displayName = firebaseUser.email;
+        vm.authenticated = true;
+        vm.uid = firebaseUser.uid;
+        if (firebaseUser.displayName) {
+          vm.displayName = firebaseUser.displayName;
+        }
+        else {
+          vm.displayName = firebaseUser.email;
+        }
+      }
+      else {
+        vm.displayName = '';
+        vm.authenticated = false;
       }
     }
 
@@ -40,6 +54,25 @@
       $timeout(function() {
         vm.showSplash = false;
       }, 1000);
+    }
+
+    function signin() {
+      loginDialogService.showDialog();
+    }
+
+    function signout() {
+      authService.logout()
+        .then(function() {
+          return $state.go('publications');
+        })
+        .then(function() {
+          $mdToast.show(
+            $mdToast.simple()
+              .textContent('Logout successful!')
+              .position('top')
+              .hideDelay(5000)
+          );
+        });
     }
   }
 })();

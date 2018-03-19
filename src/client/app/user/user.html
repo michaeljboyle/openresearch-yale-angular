@@ -1,0 +1,57 @@
+<md-content>
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="Profile">
+            <md-content layout-padding layout-wrap>
+                <div layout="row" layout-xs="column">
+                    <div flex id="profile_pic" layout-padding layout="column" layout-align="center center">
+                        <img ng-if="vm.user && vm.user.photoUrl" ng-src="{{vm.user.photoUrl}}">
+                        <img ng-if="!vm.user || !vm.user.photoUrl" ng-src="assets/img/ic_account_box_black_48px.svg">
+                        <h6 class="md-title">Reputation: {{vm.user.reputation}}</h6>
+                    </div>
+                    <div flex id="about" layout-padding layout="column" layout-align="start start">
+                        <div>
+                            <h3 class="md-display-2">{{vm.user.displayName || "Michael"}}</h3>
+                        </div>
+                        <div>
+                            <h4 class="md-title">About</h4>
+                            <p>{{vm.user.about || "your about me is currently blank"}}</p>
+                        </div>
+                    </div>
+
+                    <div flex id="stats" layout-padding>
+                        <h6>Member for {{vm.memberFor | amDurationFormat : 'seconds' }}</h6>
+                        <!-- <h6>{{vm.profileViews}} profile views</h6>
+                        <h6>Last seen {{vm.lastSeen}}</h6> -->
+                    </div>
+                </div>
+            </md-content>
+        </md-tab>
+        <!-- <md-tab label="Activity">
+            <md-content layout-padding layout-wrap>
+                <div layout="row" layout-xs="column">
+                    <div flex id=></div>
+                </div>
+            </md-content>
+        </md-tab> -->
+        <!-- <md-tab label="Edit Profile">
+            <md-content layout-padding layout-wrap>
+                Lorem ipsum dolor sit amet, ne quod novum mei
+            </md-content>
+        </md-tab> -->
+        
+        
+        <!-- md-tabs attributes you can use:
+        md-selected - integer - Index of the active/selected tab
+        md-no-ink - boolean - If present, disables ink ripple effects.
+        md-no-bar - boolean -If present, disables the selection ink bar.
+        md-align-tabs string - Attribute to indicate position of tab buttons: bottom or top; default is top
+        md-stretch-tabs string - Attribute to indicate whether or not to stretch tabs: auto, always, or never; default is auto
+        md-dynamic-height - boolean - When enabled, the tab wrapper will resize based on the contents of the selected tab
+        md-center-tabs - boolean - When enabled, tabs will be centered provided there is no need for pagination
+        md-no-pagination - boolean - When enabled, pagination will remain off
+        md-swipe-content - boolean - When enabled, swipe gestures will be enabled for the content area to jump between tabs
+        md-no-disconnect - boolean - If your tab content has background tasks (ie. event listeners), you will want to include this to prevent the scope from being disconnected
+        md-autoselect - boolean - When present, any tabs added after the initial load will be automatically selected
+        -->
+    </md-tabs>
+</md-content>

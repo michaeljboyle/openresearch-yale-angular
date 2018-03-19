@@ -8,8 +8,9 @@
 
       /* Feature areas */
       'oryale.layout',
-      'oryale.user',
       'oryale.login',
+      'oryale.user',
+      'oryale.signup',
       'oryale.submit',
       'oryale.publications',
       'oryale.review',

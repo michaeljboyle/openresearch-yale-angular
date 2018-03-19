@@ -17,8 +17,10 @@
                     </md-button>
                 </div>
                 <div layout="column">
-                    <h4>{{vm.pub.summary}}</h4>
-                    <p>{{vm.pub.abstract}}</p>
+                    <h4>Submitted by: <a ui-sref="user({userId: vm.pub.userId})">{{vm.pub.userDisplayName}}</a></h4>
+                    <h4>Authors: {{vm.pub.authors.join(', ')}}</h4>
+                    <h4>Summary: {{vm.pub.summary}}</h4>
+                    <p>Abstract: {{vm.pub.abstract}}</p>
                 </div>
             </md-card-content>
             <md-card-footer layout="row">
