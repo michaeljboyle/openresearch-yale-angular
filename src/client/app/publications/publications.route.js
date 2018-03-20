@@ -20,7 +20,6 @@
             component: 'publicationsComponent',
             resolve: {
               pubs: loadData,
-              submittedPub: getSubmittedPub,
             },
             data: {
               authorizedRoles: [USER_ROLES.guest, USER_ROLES.user, USER_ROLES.admin],
@@ -36,23 +35,5 @@
   /* @ngInject */
   function loadData(pubService) {
     return pubService.getPubList();
-  }
-
-  getSubmittedPub.$inject = ['$stateParams'];
-
-  /* @ngInject */
-  function getSubmittedPub($stateParams) {
-    if (angular.equals($stateParams, {})) {
-      return {};
-    }
-    var pub = {};
-    for (var key in $stateParams) {
-      console.log(key);
-      if ($stateParams.hasOwnProperty(key)) {
-        pub[key] = $stateParams[key];
-      }
-    }
-    console.log(pub);
-    return pub;
   }
 })();

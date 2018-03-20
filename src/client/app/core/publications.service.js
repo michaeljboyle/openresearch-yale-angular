@@ -44,13 +44,18 @@
         });
 
       function getPubListComplete(data, status, headers, config) {
-        $log.log('Retrieved pubs. Count=' + data.data.length);
-        if (submittedPub != false) {
+        var pubs = data.data;
+        $log.log('Retrieved pubs. Count=' + pubs.length);
+        var pubIds = pubs.map(function(pub) {
+          return pub.id;
+        });
+        // Add recently submitted pub if it is NOT retrieved in the GET request
+        if (submittedPub != false && pubIds.indexOf(submittedPub.id) == -1) {
           // Add the just submitted pub
-          data.data.push(submittedPub);
+          pubs.push(submittedPub);
           submittedPub = false;
         }
-        return data.data;
+        return pubs;
       }
     }
 

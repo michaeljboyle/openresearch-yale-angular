@@ -4,7 +4,6 @@
   var publicationsConfig = {
     bindings: {
       pubs: '<',
-      submittedPub: '<',
     },
     controller: PublicationsController,
     controllerAs: 'vm',
